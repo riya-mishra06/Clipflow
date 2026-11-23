@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Compass, 
   FolderKanban, 
@@ -12,11 +12,30 @@ import {
   GraduationCap, 
   Sparkles,
   ChevronRight,
-  Plus
+  Plus,
+  LogIn,
+  LogOut
 } from 'lucide-react';
+import AuthModal from '@/components/AuthModal';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'campaigns' | 'projects' | 'assets' | 'tasks'>('dashboard');
+  const [user, setUser] = useState<{ displayName: string; email: string } | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) setUser(data.user);
+      })
+      .catch(() => {});
+  }, []);
+
+  async function handleLogout() {
+    await fetch('/api/auth/me', { method: 'POST' });
+    setUser(null);
+  }
 
   return (
     <div className="flex h-screen bg-studio-950 text-slate-100 antialiased overflow-hidden">
@@ -117,17 +136,42 @@ export default function DashboardPage() {
 
         {/* User profile / footer */}
         <div className="p-4 border-t border-studio-border">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center font-medium text-xs">
-              RM
+          {user ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="w-9 h-9 rounded-full bg-indigo-600/30 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-medium text-xs">
+                  {user.displayName.substring(0, 2).toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-sm font-medium text-slate-200 truncate">{user.displayName}</p>
+                  <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                title="Log out"
+                className="text-slate-400 hover:text-red-400 transition p-1.5"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-medium text-slate-200 truncate">Riya Mishra</p>
-              <p className="text-xs text-slate-400 truncate">Solo Creator · Next.js & Mongo</p>
-            </div>
-          </div>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-studio-850 hover:bg-studio-800 border border-studio-border rounded-lg text-sm text-slate-200 transition"
+            >
+              <LogIn className="w-4 h-4 text-indigo-400" />
+              <span>Sign In / Register</span>
+            </button>
+          )}
         </div>
       </aside>
+
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={(newUser) => setUser(newUser)}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 overflow-auto">

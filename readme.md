@@ -75,6 +75,16 @@ CLIPFLOW/
 
 ---
 
+## 🖥️ Screen Architecture & Build Roadmap (32 Screens)
+
+Clipflow follows a 2-phase UI/UX blueprint:
+- **Phase 1 — Core MVP (Screens 01–23)**: Authentication, Campaign Explorer, Project Workspace, Raw Asset Store, Tasks, Calendar, Submissions & Earnings.
+- **Phase 2 — Advanced Features (Screens 24–32)**: Toolkit, Learning Hub, References, AI Clipping Assistant & Team Review/Discussions.
+
+> Detailed screen breakdown and routes are documented in [Document/SCREENS_SPECIFICATION.md](Document/SCREENS_SPECIFICATION.md).
+
+---
+
 ## ⚡ Getting Started
 
 ### 1. Prerequisites
