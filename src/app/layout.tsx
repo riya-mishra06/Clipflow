@@ -1,9 +1,20 @@
 import type { Metadata } from 'next';
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+});
+
 export const metadata: Metadata = {
-  title: 'Clipflow — Video Production & Content Operations',
-  description: 'Premium creator workspace for discovery, planning, editing, and payout tracking.',
+  title: 'Clipflow Creator Studio | Video Production & Content Operations',
+  description: 'Next-gen video production, UGC campaign discovery, and automated clipping platform for modern creators.',
 };
 
 export default function RootLayout({
@@ -12,8 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-studio-950 text-slate-100 antialiased">{children}</body>
+    <html lang="en" className={`dark ${inter.variable} ${plusJakartaSans.variable}`}>
+      <body className="bg-surface-container-lowest text-on-surface antialiased">
+        {children}
+      </body>
     </html>
   );
 }
