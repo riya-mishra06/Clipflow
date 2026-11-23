@@ -1,0 +1,691 @@
+Clipflow
+Lifecycle of SDE
+Ideation: Thinking about your product
+Feature: Finalising the product
+PRD: Planning about your project in a doc way (detailed explanation of what actually we are working on)
+Architecture: Which programming language we are working on (for tech person)
+DB and API: Backend stuff
+Development: Actual project
+UI and UX: Design my project / how our project is looking
+Debugging: Debugging the project / error solving
+Review Code: Review by AI
+Testing: Testing
+Deployment: Deploy
+Ideation Overview
+Clipflow — video production and content operations platform (Web app)
+Problem: You’re learning video editing, clipping, and AI at the same time. Campaign opportunities, tutorials, editing tools, and content trends are scattered across different platforms.
+Requirement: One place to discover opportunities, learn the skills you need, and use what you learn on real editing projects.
+Solution: Clipflow, a video production and content operations web app.
+Clipflow — Final Feature List
+Clipflow is a web app for learning video editing and running clipping and UGC projects. It connects the full workflow from finding an opportunity and organising raw footage to editing, reviewing, and tracking the result.
+
+#
+Feature
+What it includes
+Release
+1
+Campaign Discovery
+Find clipping and UGC campaigns from Content Rewards and Wolf. See the brief, payout terms, eligibility, deadline, and original link. Add campaigns manually by URL.
+MVP
+2
+Daily Campaign Updates
+Check supported sources daily and show new campaigns and changes to payouts, deadlines, or availability. Show when each source was last checked successfully.
+MVP, subject to source access
+3
+Campaign Tracking
+Save opportunities, turn them into projects, and see which campaigns you’re considering, working on, or have submitted to.
+MVP
+4
+Editing Toolkit
+Find Adobe, free, and AI tools by task, such as cutting, captioning, audio cleanup, and thumbnail creation. Open tools from Clipflow.
+MVP
+5
+Learning Hub
+Save tutorials and practice exercises for editing, clipping, UGC, and AI. Link a tutorial to a project and track which techniques you’ve practiced.
+MVP
+6
+Trend Discovery
+Surface short-form trends from sources like Instagram, including hooks, audio, formats, and editing styles.
+Later
+7
+Clipping & UGC Reference Library
+Save Reels, Shorts, ads, and example clips. Tag what you want to study and attach references to projects.
+MVP
+8
+Content Planning
+Plan a clip or UGC video with a hook, script or source timestamps, references, and an editing checklist. Keep the plan inside the project.
+MVP
+9
+Editing Project Workspace
+Run campaign, practice, and original projects. Keep the brief, source material, tasks, drafts, and final export together.
+MVP
+10
+AI Production Assistant
+Summarize briefs, suggest clip moments from transcripts, and draft hooks, captions, and UGC scripts.
+Later
+11
+Submission & Results Tracker
+Log published videos and campaign submissions. Record approval status, views, and earnings as they become available.
+MVP
+12
+Raw Data Store
+Upload or link original footage, podcast recordings, audio, transcripts, screenshots, and notes. Tag and reuse the same source material across projects.
+MVP
+13
+Scheduling & Deadlines
+See campaign cutoffs, editing due dates, review dates, and publishing dates in one calendar. Flag work that’s due soon or overdue.
+MVP
+14
+Task Assignment
+Break projects into tasks with a status and due date. Assign tasks to yourself in the MVP and to teammates when collaboration launches.
+MVP → Team
+15
+Video Review & Revisions
+Save draft versions and revision notes. Add shared playback, timestamped comments, change requests, and reviewer approval in the team release.
+MVP → Team
+16
+Notifications & Reminders
+Get deadline reminders and daily campaign updates. Add notifications for assignments, mentions, reviews, and approvals when team features launch.
+MVP → Team
+17
+Project Communication
+Discuss briefs and decisions in project or task threads with @mentions.
+Team
+18
+Team Access & Reviewer Links
+Invite collaborators to specific projects and share draft review links with clients or external reviewers.
+Team
+19
+Activity History
+See project changes, including deadline edits, draft uploads, revision requests, and approvals.
+Team
+
+Build order — Start with Campaign Discovery → Project Workspace → Raw Data Store. Then add tasks, deadlines, draft versions, and submission tracking to complete the editing workflow. Add the Toolkit, Learning Hub, and Reference Library as lightweight sections you can use while working on a real clip.
+I’ve scoped the MVP for you as a solo editor, with teammate assignments and shared reviews in the team release. Daily campaign updates stay in scope. Which listings Clipflow can collect automatically depends on verifying access to Content Rewards and Wolf. Manual campaign entry gives you a working path from day one.
+Clipflow — Product Requirements Document (PRD)
+Product: Clipflow
+Product Type: Creator Growth & Production Management Platform
+Platform: Web Application (Desktop-first)
+Design: Premium Dark Workspace
+Primary User: Individual content creators, clippers and UGC creators
+Release Strategy: MVP → Advanced AI & Trends → Future Expansion
+
+1. Product Vision
+Clipflow is an all-in-one creator growth platform that connects the complete content production lifecycle.
+It helps creators discover paid opportunities, learn editing, organize raw materials, plan content, manage production, publish videos and track performance and earnings.
+Core workflow:
+Discover → Learn → Plan → Organize → Edit → Publish → Track → Grow
+Clipflow does not aim to replace professional video editing software. It acts as the central workspace connecting the entire creator workflow.
+2. Product Objectives
+Discover clipping and UGC earning opportunities.
+Automate daily campaign discovery wherever source access permits.
+Organise campaigns and production projects.
+Manage raw footage and reusable content assets.
+Improve video editing and content creation skills.
+Discover social media trends and references.
+Manage daily production activities and deadlines.
+Track submissions, content performance and earnings.
+Introduce AI-powered production assistance.
+3. Main Application Modules
+A. Daily Creator Dashboard
+Today's tasks and priorities.
+Newly discovered campaigns.
+Active projects and progress.
+Upcoming deadlines.
+Publishing schedule.
+Earnings overview.
+Important notifications.
+B. Campaign Discovery
+Sources:
+Content Rewards.
+Whop.
+Instagram.
+TikTok.
+YouTube.
+Reddit.
+X (Twitter).
+Brand and UGC marketplaces.
+Features:
+Automatic daily campaign discovery.
+Manual campaign creation.
+URL-based campaign importing.
+Search and campaign feed.
+Payout and reward information.
+Eligibility and requirements.
+Campaign deadlines.
+Original source links.
+Campaign availability.
+Last successful source-check timestamp.
+Notifications for new campaigns and changes.
+Automatic collection depends on supported source access, APIs and permitted integrations.
+C. Campaign Tracking
+Campaign lifecycle:
+Discovered.
+Saved.
+Considering.
+In Progress.
+Submitted.
+Approved.
+Rejected.
+Completed.
+Start Project automatically creates a project from campaign details. All imported information remains editable.
+D. Editing Project Workspace
+Every project contains:
+Project overview.
+Campaign brief.
+Raw source materials.
+Content planning.
+Hooks and scripts.
+Source timestamps.
+Reference videos.
+Editing tasks.
+Editing checklist.
+Draft versions.
+Revision notes.
+Final exports.
+Submission details.
+Performance and earnings.
+E. Raw Data Store
+Video uploads.
+Audio uploads.
+Image uploads.
+PDF and document uploads.
+Transcripts.
+External file links.
+Google Drive references.
+Tags and categories.
+Project-based organization.
+Reusable source materials.
+Use hybrid storage: uploaded assets plus external references.
+F. Content Planning
+Every content plan includes:
+Video title.
+Concept.
+Hook.
+Script.
+Source timestamps.
+Reference videos.
+Target platform.
+Video format.
+Duration.
+Editing checklist.
+G. Editing Toolkit
+Task-based tool discovery:
+Video cutting and trimming.
+Captions and subtitles.
+Motion graphics.
+Animation.
+Sound effects.
+Audio cleanup.
+Background removal.
+Thumbnail creation.
+AI video generation.
+Voiceovers.
+Color grading.
+Include tool descriptions and direct access links.
+Editing happens in external applications such as Adobe Premiere Pro, After Effects and CapCut.
+H. Learning Hub
+Structured learning system:
+Video editing.
+Clipping.
+UGC creation.
+AI tools.
+Content creation.
+Beginner-to-advanced learning paths.
+Curated tutorials.
+Lesson progress.
+Completed learning milestones.
+I. Trend Discovery
+A daily trend feed featuring:
+Instagram Reels.
+TikTok videos.
+YouTube Shorts.
+Trending formats.
+Content links.
+Available engagement information.
+Discovery timestamps.
+J. Reference Library
+Save Reels, Shorts, ads and UGC examples.
+Organize using categories and tags.
+Create collections.
+Add personal notes.
+Attach references to projects.
+K. Submission & Results Tracker
+Published video URLs.
+Campaign submission dates.
+Approval and rejection status.
+Revision requests.
+Views.
+Likes.
+Comments.
+Shares.
+Payouts.
+Earnings history.
+Performance information can initially be entered manually.
+L. Calendar & Scheduling
+Daily, weekly and monthly calendar views.
+Track:
+Campaign deadlines.
+Project deadlines.
+Editing tasks.
+Publishing dates.
+Learning activities.
+Important milestones.
+M. Task Manager
+Create tasks and subtasks.
+Priority levels.
+Due dates.
+Status tracking.
+Progress tracking.
+Project-linked tasks.
+Personal daily tasks.
+N. Notifications
+In-app notifications only for the initial release.
+Events:
+New campaigns.
+Campaign changes.
+Upcoming deadlines.
+Overdue tasks.
+Project updates.
+Submission updates.
+Revision requests.
+O. AI Production Assistant — Later Release
+Campaign brief summarization.
+Transcript analysis.
+Interesting moment detection.
+Timestamp suggestions.
+Clip recommendations.
+Hook generation.
+Script generation.
+Captions and hashtags.
+UGC script generation.
+Editing recommendations.
+
+4. Release Strategy
+Phase 1 — Core MVP
+Build the foundation:
+Application layout and dashboard.
+Campaign discovery.
+Manual campaign management.
+Daily campaign updates, subject to source access.
+Campaign tracking.
+Project creation and workspace.
+Raw Data Store.
+Content planning.
+Task management.
+Calendar and deadlines.
+Draft and revision tracking.
+Submission and earnings tracking.
+Phase 2 — Creator Productivity
+Editing Toolkit.
+Learning Hub.
+Reference Library.
+Trend Discovery.
+Improved notifications.
+Enhanced production organization.
+Phase 3 — AI Intelligence
+AI Production Assistant.
+Transcript analysis.
+Clip recommendations.
+Automated hooks and scripts.
+Content intelligence.
+Phase 4 — Future Expansion
+Team collaboration.
+Shared video reviews.
+Reviewer links.
+Project communication.
+Team assignments.
+Activity history.
+These are not required for the initial personal workspace.
+
+5. Design Requirements
+Visual direction: Premium Dark Workspace
+Dark-first interface.
+Professional typography.
+Minimal sidebar navigation.
+Premium creator-studio aesthetic.
+Subtle gradients.
+Smooth, restrained animations.
+Consistent spacing.
+Clear information hierarchy.
+Attractive campaign cards.
+Visual project progress indicators.
+Responsive layouts.
+The interface should feel like a professional creator productivity product rather than a generic admin dashboard.
+6. Platform Requirements
+Web application only.
+Desktop-first experience.
+Mobile-responsive layouts.
+Secure authentication.
+Persistent database.
+File upload and external-link management.
+Reliable campaign data storage.
+Modular application architecture.
+Scalable integration architecture.
+7. Important Product Constraints
+Do not build a native video editor.
+Do not introduce unnecessary agency management.
+Do not build subscription or multi-tenant infrastructure for the personal MVP.
+Do not depend entirely on automatic campaign scraping.
+Support manual campaign entry from the beginning.
+Do not fabricate campaign data or engagement statistics.
+Keep AI functionality modular.
+Avoid implementing every advanced feature before the core workflow works.
+
+8. Product Success Criteria
+Clipflow should allow its user to:
+Discover and save a campaign.
+Convert a campaign into an editing project.
+Organize all raw footage and references.
+Create a content plan.
+Manage editing tasks and deadlines.
+Track drafts and revisions.
+Publish and submit videos.
+Record performance and earnings.
+Improve editing skills through structured learning.
+Final product principle:
+Clipflow should become the single place where a creator can manage everything surrounding content production and creator growth, without needing to manage the same information across multiple disconnected tools.
+Clipflow System Design
+Clipflow’s first release should let you take a real clipping opportunity from saved campaign → editing project → raw footage and content plan → draft → submission → recorded earnings. That workflow gives us the architecture, data model, and first build milestone.
+I’m using the PRD’s release strategy for build order and the finalized feature list for detail. The feature list says Wolf, while the PRD says Whop. I’ve used Whop as the working name. Automated collection from Whop and Content Rewards depends on verified, permitted access. Manual campaign entry is part of the first build.
+1. Architecture
+Use a PERN modular monolith with a separate background worker from the same repo. The Express API handles requests from the React app. The worker runs scheduled campaign checks and reminders. PostgreSQL stores application records and durable jobs. Private object storage holds uploaded media and documents.
+
+Component
+Proposed choice
+Responsibility
+Web app
+React, Vite, TypeScript
+Desktop-first dashboard, campaign feed, project workspace, media library, and calendar
+API
+Node.js, Express, TypeScript
+Authentication, ownership checks, business rules, and signed upload/download URLs
+Database
+PostgreSQL
+Campaigns, projects, asset metadata, tasks, drafts, submissions, earnings, and notifications
+Media storage
+Private S3-compatible storage
+Footage, audio, documents, drafts, and final exports
+Background jobs
+PostgreSQL-backed job queue and a separate Node worker
+Daily campaign checks, deadline reminders, retries, and abandoned-upload cleanup
+Deployment
+Web frontend, API process, worker process, managed PostgreSQL, and object storage
+Run scheduled work independently of API requests
+
+The PostgreSQL-backed queue is an MVP design choice. Clipflow’s initial background workload is scheduled source checks and reminders, so one database can support it without deploying a separate broker. Editing happens in Adobe, CapCut, or the creator’s preferred tool. Clipflow manages the plan, footage, versions, and submission around that work.
+
+2. Modules and Data Ownership
+
+Module
+Main records
+Design rule
+Accounts
+users, sessions, user_settings
+Scope private records to the signed-in user. Store the user’s time zone for calendars and reminders.
+Campaign Discovery
+campaign_sources, campaigns, campaign_source_runs, campaign_changes
+Track source listings and changes. Scope manually added campaigns to their creator.
+Campaign Tracking
+saved_campaigns
+Store personal tracking state separately from source availability. A source can close a campaign while your project remains active.
+Project Workspace
+projects, content_plans, source_segments, checklist_items
+Support campaign, practice, and original projects. Copy campaign details into an editable brief when a project starts.
+Raw Data Store
+assets, project_assets, asset_tags
+Store an uploaded file or external link once and attach it to multiple projects. Keep storage keys in the database and file bytes in object storage.
+Tasks and Calendar
+tasks, schedule_events
+Tasks can be personal or project-linked. Build calendar views from existing campaign, project, and task deadlines, plus standalone publishing and learning events.
+Drafts and Revisions
+draft_versions, revision_notes
+A new upload creates a version. Revision notes attach to that version. A project can designate an export as final.
+Submissions and Results
+submissions, submission_metrics, payouts
+Track approval per submission, metrics by observation date, and actual payouts by currency. Approval and payment are separate events.
+Dashboard and Notifications
+notifications and queries across existing records
+Show today’s tasks, upcoming deadlines, new campaigns, active projects, and earnings from their owning modules.
+Toolkit, Learning, References
+tools, learning_paths, lessons, lesson_progress, references, collections, project_references
+Ship these after the first production workflow. Let creators attach references and learning material to projects.
+
+Three relationships matter early:
+Campaign → project. Keep the original campaign link and snapshot the brief, requirements, payout terms, and deadline at project creation. If the source later changes a deadline or payout, show the change and let the creator decide whether to update their working brief.
+Asset ↔ project. A podcast recording can feed multiple clips. Each project can point to a different timestamp range in the same recording. Removing a project attachment leaves the shared asset available for other projects.
+Project → drafts and submissions. A project can have several drafts and published clips. A submission can point to the exact version used, so a later revision leaves the submission history intact.
+3. Main Workflows
+Campaign Discovery and Daily Updates
+Each source adapter should use a stable external listing ID when available. A failed check preserves the last successfully collected data and its timestamp. A listing’s disappearance should only change its availability when the integration gives enough evidence, such as an explicit closure or a complete listing feed with documented semantics. A pasted URL can always be saved with user-entered details, even when the source cannot provide a preview.
+Upload, Edit, and Submit
+
+For large footage, use direct multipart uploads. The API creates a pending asset and issues signed upload instructions. After upload, it verifies ownership and the stored object before making the asset available. External links retain their original provider’s permissions.
+4. API Boundaries
+
+Action
+Initial endpoint
+Browse or manually add campaigns
+GET /api/campaigns, POST /api/campaigns
+Save a campaign and update personal tracking
+PUT /api/saved-campaigns/:campaignId, PATCH /api/saved-campaigns/:campaignId
+Start a project from a campaign
+POST /api/campaigns/:campaignId/projects
+Create a practice or original project
+POST /api/projects
+Start and complete a file upload
+POST /api/assets/uploads, POST /api/assets/uploads/:id/complete
+Save an external asset and attach an existing asset
+POST /api/assets/links, PUT /api/projects/:id/assets/:assetId
+Update content plan, tasks, and drafts
+PUT /api/projects/:id/content-plan, POST /api/tasks, POST /api/projects/:id/drafts
+Record submissions, metrics, and payouts
+POST /api/projects/:id/submissions, POST /api/submissions/:id/metrics, POST /api/submissions/:id/payouts
+Read dashboard, calendar, and notifications
+GET /api/dashboard, GET /api/calendar, GET /api/notifications
+
+Make Start Project idempotent per creation attempt so retrying a request after a timeout cannot create an accidental duplicate. Apply the same principle to upload completion and worker retries. For reminders, store deadlines with their source time zone when known and display them in the creator’s time zone. If a campaign only publishes a date, preserve that precision instead of inventing a cutoff hour.
+5. Build Sequence
+
+Milestone
+Build
+Done when
+1. Campaign → Project → Raw Assets
+Authentication, app shell, manual campaign entry and save, project creation, uploads, external links, reusable assets
+You can turn a real listing into a project and reuse one footage asset across two projects.
+2. Plan → Draft → Submission
+Content plan, timestamps, tasks, calendar, draft versions, revision notes, final export, submissions, and earnings
+You can run a full editing project and trace its submission back to the exact draft or final export.
+3. Daily operations
+Dashboard summaries, in-app reminders, source run history, campaign change detection, and permitted source adapters
+A successful check updates the feed, a failed check preserves prior data, and job retries avoid duplicate notifications. Source access verification can start alongside milestone 1.
+4. Creator productivity
+Toolkit, Learning Hub, Reference Library, then trend discovery as source access permits
+You can open an editing tool from Clipflow, track learning progress, and attach a reference to a live project.
+5. AI and collaboration
+Transcript-derived suggestions and AI drafting, followed by project roles, shared review links, timestamped comments, and activity history
+AI suggestions can be reviewed before applying them, and collaborators can access the projects or drafts explicitly shared with them.
+
+The next design step is the PostgreSQL schema and API contracts for milestone 1. Start with users, campaigns, saved_campaigns, projects, assets, and project_assets, then walk one real listing and one real footage upload through those records before expanding the schema.
+Clipflow Database and API Design
+Stack · React/Vite → Express/TypeScript → PostgreSQL, with private S3-compatible object storage and a separate Node worker using a PostgreSQL-backed queue.
+Scope · Solo creator workflow from campaign discovery to recorded payout. The source brief uses both Wolf and Whop. This design uses Whop, following the PRD. The feature list marks Toolkit, Learning Hub, and References as MVP, while the numbered release plan places them after core production. Build their lightweight versions in milestone 4 after the campaign-to-payout workflow. Trends, AI, and collaboration follow separately.
+1. PostgreSQL Model
+Use UUID primary keys, timestamptz for instants, date for date-only deadlines, integer milliseconds for media offsets, and nonnegative PostgreSQL bigint amounts in currency minor units. Serialize monetary amounts and large metric counters as decimal strings. All mutable records have created_at and updated_at. The tables below list domain columns in addition to those defaults. Ordinary relationships are non-null unless marked optional.
+
+Table
+Domain columns and constraints
+users
+email with case-insensitive uniqueness, password_hash, display_name
+user_settings
+user_id PK/FK, IANA time_zone, reminder preferences
+sessions
+user_id, unique token_hash, expires_at, optional revoked_at
+campaign_sources
+unique slug, display_name, enabled, last_success_at optional
+campaigns
+optional source_id, optional owner_id, optional external_id, optional source_url and canonical_url, title, brief, eligibility, requirements, optional payout_terms, availability, deadline fields, optional last_seen_at, optional archived_at
+campaign_source_runs
+source_id, scheduled_for, status, attempt count, start/end times, counts, safe error code. Unique (source_id, scheduled_for)
+campaign_changes
+campaign_id, source_run_id, field, optional JSONB before_value and after_value. Unique (campaign_id, source_run_id, field)
+saved_campaigns
+PK (owner_id, campaign_id), state, optional notes
+projects
+owner_id, optional campaign_id, kind, title, editable brief, optional JSONB campaign_snapshot, status, deadline fields, optional final_draft_id
+assets
+owner_id, kind (upload or link), category (video, audio, image, document, transcript, other), name, optional MIME, size and duration, optional unique object_key, optional external_url, status
+asset_uploads
+owner_id, asset_id unique, optional provider multipart ID while initializing, expected size, part size, expiry, status
+project_assets
+owner_id, project_id, asset_id, role, optional notes. PK (project_id, asset_id)
+tags / asset_tags
+Tag owner_id, name, normalized unique name per owner. Join PK (asset_id, tag_id) and same-owner FKs
+content_plans
+owner_id, unique project_id, title, concept, hook, script, target platform, format, optional positive target duration in milliseconds
+source_segments
+owner_id, project_id, asset_id, start/end milliseconds, optional label. FK to the project attachment. Require 0 ≤ start_ms < end_ms and cap at known duration
+checklist_items
+owner_id, content_plan_id, label, position, optional completion time
+tasks
+owner_id, optional project_id, optional parent_task_id, title, priority, status, deadline fields. Parent and child must share the same owner and project, including personal tasks. Parent is set on creation, so cyclic reparenting is excluded
+schedule_events
+owner_id, optional project_id, kind (publish, review, learning, milestone), title, start and optional end. Instant events require time-zone-aware input. All-day events use dates and an exclusive end
+draft_versions
+owner_id, project_id, positive version_number, asset_id, optional notes. Unique (project_id, version_number)
+revision_notes
+owner_id, draft_version_id, body, optional timestamp_ms, optional resolution time
+submissions
+owner_id, project_id, draft_version_id, platform, optional published URL, optional submission URL, submitted_at, current status
+submission_status_events
+owner_id, submission_id, status, optional reason, occurred_at. Write the event and current state together
+submission_metrics
+owner_id, submission_id, observed_at, nullable nonnegative views, likes, comments, shares. Unique (submission_id, observed_at). Null means unknown, zero means observed zero
+payouts
+owner_id, submission_id, positive amount_minor, ISO currency code, received_at, optional payment reference and note. Partial payouts have separate rows
+notifications
+owner_id, kind, entity type and ID, payload, unique (owner_id, dedupe_key), optional read_at
+idempotency_requests
+PK (owner_id, operation, key), request fingerprint, response status/body and expiry. Operation includes the resource path
+Queue tables
+Owned by the queue library. Application job keys include the source and check date, reminder recipient and deadline occurrence, or upload ID
+
+Integrity and Visibility
+Imported campaigns have a source and no owner. Manual campaigns have an owner and no source. A source listing is public within the signed-in campaign feed. Manual campaigns and everything downstream belong to their creator. Archived manual campaigns leave existing projects and history readable to their owner.
+Imported campaign identity uses partial unique indexes on (source_id, external_id) where the external ID is present and on (source_id, canonical_url) where it is absent. When an adapter first learns an ID, reconcile an existing URL-only row before inserting. Manual campaigns can use a separate partial unique index on (owner_id, canonical_url) for active records with URLs.
+Add UNIQUE(owner_id, id) to private parent tables and use composite foreign keys from private child rows. Use project-aware FKs for a project's final draft and for a submission's draft, so they always belong to the same project. Validate access to campaign rows before creating saves or projects. Reject cross-owner lookups with 404.
+Deadline fields use deadline_date, deadline_at, and optional deadline_time_zone. A check permits at most one of date and instant. Preserve the source time zone when known. Display a date-only deadline as an all-day event and mark it overdue when the creator's local date passes it.
+Campaign availability uses unknown | open | closed. Personal tracking uses saved | considering | in_progress | submitted | approved | rejected | completed. Submission status uses submitted | revision_requested | approved | rejected. The personal campaign state is a user-controlled summary across potentially several projects and submissions. Starting the first project advances a saved opportunity from saved or considering to in progress. Later submission changes leave that summary under the user's control.
+Use a stable ID for every asset. Detaching an asset preserves its file and other attachments. Reject deletion with 409 while a segment, draft, or attachment references it. Persist a deletion job before deleting unreferenced storage objects. Archive projects with historical drafts/submissions.
+Index common filters with leading owner and then status or deadline. Add indexes for source feed order, reverse join lookup by asset, submissions by project, payouts by receipt date, unread notifications, and every FK used to enforce deletes. Add PostgreSQL full-text search over campaign title and brief for the discovery feed, with the visibility filter in the same query.
+
+2. REST API
+Base path /api/v1. JSON fields use camelCase. Resource responses use { "data": ... }. Lists add nextCursor and accept a default limit of 25, maximum 100. Cursors bind to filters and use a stable sort with an ID tie-breaker. Calendar reads accept ISO dates from inclusive and to exclusive in the supplied IANA time zone. Use 201 for creation, 200 for reads and updates, 202 for accepted asynchronous imports, and 204 for deletion or logout.
+Use secure, HttpOnly session cookies over HTTPS, check CSRF tokens for browser mutations, and rate-limit login, imports, and signed URL creation. Return errors as { "error": { "code": "VALIDATION_ERROR", "message": "...", "details": [], "requestId": "..." } }. Use 400 for invalid parameters or payloads, 401 for missing sessions, 404 for missing or inaccessible resources, 409 for invalid state transitions, stale edits or conflicting retries, and 429 for rate limits. Return a resource version for editable records and require If-Match on edits that could overwrite a brief, content plan, or draft selection.
+
+Method and path
+Request and result
+POST /auth/register, POST /auth/login
+Register with email, password and display name. Log in with email and password. Return viewer and issue session cookie
+POST /auth/logout, GET/PATCH /me
+Revoke session. Read account/settings or update display name, time zone and reminder preferences
+GET /campaigns, GET /campaigns/{id}
+Visible feed/detail. Filters include q, sourceId, availability, deadlineBefore. List/detail expose original URL and source freshness
+POST /campaigns, PATCH/DELETE /campaigns/{id}
+Create, edit or archive own manual listing. Create requires title. Accept URL, brief, requirements, eligibility, payout terms, availability and deadline
+POST /campaign-imports, GET /campaign-imports/{id}
+Submit URL and user-supplied fallback title. Save manual draft and optionally enqueue supported adapter enrichment. Poll import status and resulting campaign ID. Persist campaign_imports(owner_id, campaign_id, url, status, error_code) for this route
+GET /campaign-sources, GET /campaigns/{id}/changes
+Source enablement, last attempt and last successful check. Listing field history
+GET /saved-campaigns, PUT/PATCH/DELETE /saved-campaigns/{campaignId}
+List, save idempotently, edit personal state or notes, or unsave. Unsave preserves projects
+POST /campaigns/{campaignId}/projects
+Accept optional title and required Idempotency-Key. Create project and snapshot in a transaction
+GET/POST /projects, GET/PATCH /projects/{id}
+List projects or create practice/original project. Read project or update title, brief, status, deadline or final draft. Project statuses are planned, active, completed, archived
+GET /assets, GET/PATCH/DELETE /assets/{id}
+List/filter by category or tag. Read metadata, rename/retag, or delete an unreferenced asset
+POST /assets/links
+Save name, HTTPS URL and category. Return reusable asset ID
+POST /assets/uploads, GET /assets/uploads/{uploadId}
+Create resumable upload with name, MIME, expected bytes and category. Return upload ID, asset ID, part size, status and expiry. Resume response includes already uploaded parts
+POST /assets/uploads/{uploadId}/parts
+Accept requested part numbers and return short-lived signed PUT URLs
+POST /assets/uploads/{uploadId}/complete
+Accept ordered part numbers and ETags. Finalize and verify the object. Repeated successful completion returns the same asset
+DELETE /assets/uploads/{uploadId}, GET /assets/{id}/download
+Abort open upload. Return a short-lived URL for authorized ready objects or the saved external link
+GET /projects/{id}/assets, PUT/DELETE /projects/{id}/assets/{assetId}
+List attachments or attach/detach a ready same-owner asset. Attach accepts role and optional notes
+GET/PUT /projects/{id}/content-plan
+Read/upsert title, concept, hook, script, platform, format and target duration
+GET/POST /projects/{id}/segments, PATCH/DELETE /projects/{id}/segments/{segmentId}
+Manage ranges inside attached audio or video. Create uses assetId, startMs, endMs, optional label
+GET/POST /projects/{id}/checklist, PATCH/DELETE /projects/{id}/checklist/{itemId}
+Manage checklist labels, order and completion
+GET/POST /tasks, PATCH/DELETE /tasks/{id}
+Filter by project, state or date range. Create with optional project and parent, title, priority, deadline. Statuses are todo, in progress, done or cancelled. Derive project task progress from done divided by non-cancelled tasks
+GET/POST /projects/{id}/drafts
+List versions or create next immutable version with a ready project asset. Serialize version allocation by locking the project row
+GET/POST /projects/{id}/drafts/{draftId}/notes, PATCH /projects/{id}/drafts/{draftId}/notes/{noteId}
+Read/add revision notes and mark resolved
+GET/POST /projects/{id}/submissions, GET /submissions/{id}
+Record exact draft, platform, URLs and submission time. Detail shows status history. To resubmit with a revised export, create a new submission referencing that draft
+PATCH /submissions/{id}/status
+Transition from submitted to revision requested, approved or rejected. Require a reason for revision or rejection. Approved and rejected are terminal
+GET/POST /submissions/{id}/metrics, PATCH/DELETE /submissions/{id}/metrics/{metricId}
+Record or correct manually observed metrics. Latest view selects by observation time. Historical cumulative snapshots are never summed
+GET/POST /submissions/{id}/payouts, PATCH/DELETE /submissions/{id}/payouts/{payoutId}
+Record or correct individual payments received. Require idempotency key for creation. Summaries group amounts by currency
+GET /dashboard, GET /calendar
+Compose data from campaigns, projects, tasks, events and payouts. Calendar deduplicates by origin type and ID and shows saved campaign deadlines, project/task deadlines and standalone events
+POST /schedule-events, PATCH/DELETE /schedule-events/{id}
+Manage publishing, review, learning or milestone events
+GET /notifications, PATCH /notifications/{id}
+List notices with optional unread filter. Set read state
+
+Start Project Request and Response
+
+POST /api/v1/campaigns/8b3c703a-7543-4ddf-9898-acfc83824bb0/projects
+Idempotency-Key: 1ff551c0-9cc9-4a66-9d30-848930e9c94b
+Content-Type: application/json
+
+{"title":"Podcast highlight"}
+
+
+
+{
+  "data": {
+    "id": "80da2ddd-9dea-485e-a9ec-6f6e48e65894",
+    "campaignId": "8b3c703a-7543-4ddf-9898-acfc83824bb0",
+    "kind": "campaign",
+    "title": "Podcast highlight",
+    "status": "planned",
+    "deadline": {"date": "2026-12-10"}
+  }
+}
+
+Use a tagged deadline input by shape. Accept {"date":"2026-12-10"}, {"at":"2026-12-10T18:00:00+05:30","timeZone":"Asia/Kolkata"}, or null. The campaign snapshot contains the original URL, brief, eligibility, requirements, payout terms, deadline and capture time. Copy the corresponding fields into the editable project brief and deadline. Scheduled checks only update source-owned data.
+3. Transactions and Background Work
+Start Project. Authenticate, validate campaign visibility, lock or insert the idempotency record, create or update the save, capture the campaign snapshot, create the project, and store the response in one transaction. A repeat key and identical body replay the stored success. A changed body returns 409. A new key permits an intentional second project. Retain keys for at least 24 hours and document the retry window.
+Upload. First persist a pending asset and upload session. Initialize provider multipart state, then return signed part URLs in batches as requested. Validate declared size and configured quotas before signing. Lock or claim the completion state, verify storage size and upload identity, and mark the asset ready atomically with the session update. If storage completion succeeds before the database commit, a retry can verify the existing object under the same generated key and finish the transition. Cleanup expires abandoned uploads and aborts incomplete multipart sessions. Configure bucket lifecycle cleanup as a fallback. An external link keeps its provider permissions.
+Source checks. Schedule daily runs for enabled, permitted adapters. Upsert stable identities and record changes transactionally with the successful run. Preserve previous records and freshness on a failed check. Infer closure from absence only when a complete feed has documented closure semantics. If an import adapter is unavailable, keep the editable manual listing and return its enrichment status. Accept only validated provider URLs for server-side enrichment and reject redirects outside approved provider hosts.
+Reminders. Generate from current deadlines and re-check the latest value before delivery. Deduplicate per recipient, entity, deadline value and reminder offset. Write notifications with a unique key so retries do not create duplicates. Use the same deduplication principle for source change notifications.
+
+4. Delivery Milestones and Extensions
+
+Milestone
+Acceptance check
+1. Campaign → Project → Raw Assets
+Add a manual listing and start a project. Replay the request without duplicating it. Attach one footage asset to two projects and detach it from one while the other can still download it
+2. Plan → Draft → Submission
+Create a plan with a valid timestamp range, complete checklist/tasks, produce two drafts and show which draft each submission used. Track separate approval, metrics and two partial payouts
+3. Daily Operations
+Test date-only deadlines across time zones. Verify source failures preserve prior listings and freshness. Retry a reminder or source run and confirm notices stay unique
+4. Creator Productivity
+Toolkit uses tools with category, description and URL via GET /tools. Learning uses learning_paths, lessons, lesson_progress, and project_lessons via GET /learning-paths, PUT /lessons/{id}/progress, PUT /projects/{id}/lessons/{lessonId}. References use references, collections, collection_references, reference_tags, and project_references via GET/POST /references, GET/POST /collections, PUT /collections/{id}/references/{referenceId}, PUT /projects/{id}/references/{referenceId}. Add source-backed trend reads once permitted feed data is available
+5. AI and Collaboration
+Store generated suggestions against their project and source inputs with review state. Add project membership, draft-scoped reviewer grants, revision comments and activity records after defining team authorization
+
+This document specifies the schema and REST behavior. Migrations, a deployed API, and external adapter access are implementation work.
+
