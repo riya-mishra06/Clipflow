@@ -87,6 +87,19 @@ export default function DashboardPage() {
               <span>Tasks & Deadlines</span>
             </button>
 
+            <div className="pt-4 px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Automation & Publishing</div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-indigo-400/90 bg-indigo-500/10 border border-indigo-500/20 cursor-pointer">
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                <span>AI Auto-Clipper</span>
+              </div>
+              <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-slate-200 hover:bg-studio-850 cursor-pointer">
+                <Layers className="w-4 h-4" />
+                <span>Connected Accounts (IG/YT)</span>
+              </div>
+            </div>
+
             <div className="pt-4 px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Productivity & Growth</div>
 
             <div className="space-y-1">
@@ -97,14 +110,6 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 cursor-not-allowed">
                 <GraduationCap className="w-4 h-4" />
                 <span>Learning Hub</span>
-              </div>
-              <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 cursor-not-allowed">
-                <Layers className="w-4 h-4" />
-                <span>Reference Library</span>
-              </div>
-              <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-500 cursor-not-allowed">
-                <Sparkles className="w-4 h-4" />
-                <span>AI Assistant (Later)</span>
               </div>
             </div>
           </nav>

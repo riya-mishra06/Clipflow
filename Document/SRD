@@ -289,17 +289,21 @@ Overdue tasks.
 Project updates.
 Submission updates.
 Revision requests.
-O. AI Production Assistant — Later Release
+O. AI Production Assistant & Automated Clipping Engine
 Campaign brief summarization.
-Transcript analysis.
-Interesting moment detection.
-Timestamp suggestions.
-Clip recommendations.
-Hook generation.
-Script generation.
-Captions and hashtags.
-UGC script generation.
-Editing recommendations.
+Transcript analysis with Whisper word-level timestamps.
+Viral moment & hook detection.
+Automated 9:16 vertical re-framing & dynamic animated captions.
+Background audio & beat mixing (royalty-free / trending lofi & beats).
+One-click draft generation with human review gate.
+
+P. Multi-Account Social Publishing (Instagram & YouTube API)
+Connected Accounts Management:
+Multi-account support (e.g., clipping channel, UGC channel, podcast channel).
+Instagram Graph API (Reels publishing, cover photo, caption, hashtags).
+YouTube Data API v3 (Shorts direct upload, title, description, tags).
+Scheduled publishing & immediate direct post.
+Auto-capture published post URLs and sync directly into Submissions & Performance Tracker.
 
 4. Release Strategy
 Phase 1 — Core MVP
@@ -389,29 +393,26 @@ Clipflow System Design
 Clipflow’s first release should let you take a real clipping opportunity from saved campaign → editing project → raw footage and content plan → draft → submission → recorded earnings. That workflow gives us the architecture, data model, and first build milestone.
 I’m using the PRD’s release strategy for build order and the finalized feature list for detail. The feature list says Wolf, while the PRD says Whop. I’ve used Whop as the working name. Automated collection from Whop and Content Rewards depends on verified, permitted access. Manual campaign entry is part of the first build.
 1. Architecture
-Use a PERN modular monolith with a separate background worker from the same repo. The Express API handles requests from the React app. The worker runs scheduled campaign checks and reminders. PostgreSQL stores application records and durable jobs. Private object storage holds uploaded media and documents.
+Use a modern full-stack web framework: Next.js (App Router) with TypeScript, backed by MongoDB with Mongoose ODM, and Tailwind CSS for the desktop-first workspace. Background workers and cron routines operate via scheduled worker processes / edge functions. Private object storage (S3-compatible) holds uploaded media and documents.
 
 Component
 Proposed choice
 Responsibility
-Web app
-React, Vite, TypeScript
-Desktop-first dashboard, campaign feed, project workspace, media library, and calendar
-API
-Node.js, Express, TypeScript
-Authentication, ownership checks, business rules, and signed upload/download URLs
-Database
-PostgreSQL
-Campaigns, projects, asset metadata, tasks, drafts, submissions, earnings, and notifications
+Web app & API
+Next.js (App Router, Server Actions, Route Handlers), React, TypeScript
+Desktop-first dashboard, campaign feed, project workspace, media library, calendar, API endpoints, authentication, and signed upload/download URLs
+Database & ODM
+MongoDB with Mongoose
+Flexible creator document store for campaigns, projects, content plans, asset metadata, tasks, drafts, submissions, earnings, and notifications
 Media storage
 Private S3-compatible storage
 Footage, audio, documents, drafts, and final exports
 Background jobs
-PostgreSQL-backed job queue and a separate Node worker
+Scheduled Node worker / Cron jobs
 Daily campaign checks, deadline reminders, retries, and abandoned-upload cleanup
 Deployment
-Web frontend, API process, worker process, managed PostgreSQL, and object storage
-Run scheduled work independently of API requests
+Vercel / Containerized Node process, managed MongoDB Atlas, and object storage
+Run web UI, server actions, and scheduled worker jobs smoothly with minimal operational overhead
 
 The PostgreSQL-backed queue is an MVP design choice. Clipflow’s initial background workload is scheduled source checks and reminders, so one database can support it without deploying a separate broker. Editing happens in Adobe, CapCut, or the creator’s preferred tool. Clipflow manages the plan, footage, versions, and submission around that work.
 
@@ -508,10 +509,10 @@ AI suggestions can be reviewed before applying them, and collaborators can acces
 
 The next design step is the PostgreSQL schema and API contracts for milestone 1. Start with users, campaigns, saved_campaigns, projects, assets, and project_assets, then walk one real listing and one real footage upload through those records before expanding the schema.
 Clipflow Database and API Design
-Stack · React/Vite → Express/TypeScript → PostgreSQL, with private S3-compatible object storage and a separate Node worker using a PostgreSQL-backed queue.
+Stack · Next.js (App Router) → Mongoose / MongoDB → Tailwind CSS, with private S3-compatible object storage and scheduled worker tasks.
 Scope · Solo creator workflow from campaign discovery to recorded payout. The source brief uses both Wolf and Whop. This design uses Whop, following the PRD. The feature list marks Toolkit, Learning Hub, and References as MVP, while the numbered release plan places them after core production. Build their lightweight versions in milestone 4 after the campaign-to-payout workflow. Trends, AI, and collaboration follow separately.
-1. PostgreSQL Model
-Use UUID primary keys, timestamptz for instants, date for date-only deadlines, integer milliseconds for media offsets, and nonnegative PostgreSQL bigint amounts in currency minor units. Serialize monetary amounts and large metric counters as decimal strings. All mutable records have created_at and updated_at. The tables below list domain columns in addition to those defaults. Ordinary relationships are non-null unless marked optional.
+1. MongoDB / Mongoose Model
+Use ObjectId primary keys, ISODate for timestamps and deadlines, integer milliseconds for media offsets, and string or integer cents/minor units for monetary values. Mongoose schemas provide validation, indexing, and cascade cleanup logic. All mutable models include timestamps (createdAt, updatedAt). The collections below list domain schemas in addition to those defaults. Ordinary relationships use ObjectId references with populate support.
 
 Table
 Domain columns and constraints
