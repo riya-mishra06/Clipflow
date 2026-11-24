@@ -1,9 +1,10 @@
 # Clipflow Creator Studio — Progress & Project Status Documentation
 
-> **Status**: Frontend Phase Complete (100%) | Next Phase: Backend & Database Integration  
+> **Status**: Authentication & Session Layer 100% Complete & Verified (MongoDB Atlas Cloud Connected)  
+> **Next Phase**: Live Dynamic Workstation CRUD (Campaigns & Projects Wireup)  
 > **Last Updated**: November 24, 2026  
 > **Repository**: `CLIPFLOW`  
-> **Tech Stack**: Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS, Mongoose / MongoDB
+> **Tech Stack**: Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS, Zod, Mongoose / MongoDB Atlas
 
 ---
 
@@ -11,10 +12,10 @@
 
 **Clipflow Creator Studio** is an authentic, high-density video production and content operations platform built specifically for short-form video editors, UGC creators, and clip agencies.
 
-Unlike generic AI boilerplate templates, Clipflow is modeled after professional video workstation environments (DaVinci Resolve, Linear, Frame.io) featuring:
+Modeled after professional video workstation environments (DaVinci Resolve, Linear, Frame.io) featuring:
 - **Matte Obsidian Palette**: `#09090b` canvas with `#121215` elevated cards and hairline `border-white/[0.08]` borders.
 - **Accents**: Electric Indigo (`#6366f1`) and Mint Emerald (`#10b981`).
-- **Production Truth**: Zero fake mock data arrays. Clean, actionable empty states ready for real database persistence.
+- **Production Truth**: Zero fake mock data arrays. Clean, actionable empty states backed by live MongoDB Atlas collections.
 
 ---
 
@@ -22,20 +23,25 @@ Unlike generic AI boilerplate templates, Clipflow is modeled after professional 
 
 | Milestone / Component | Scope | Status | Notes |
 | :--- | :--- | :---: | :--- |
-| **Design System & Theme Overhaul** | Tailwind configuration, color palette, dark mode, custom hairline scrollbar | ✅ Done | Replaced neon purple with pro matte charcoal studio theme. |
-| **Hydration & Browser Quirks** | Suppress extension hydration mismatch in `layout.tsx` | ✅ Done | Fixed `cz-shortcut-listen` Chrome extension hydration errors. |
-| **Fake Data Elimination** | Remove hardcoded arrays from all hubs & replace with Empty States | ✅ Done | All mock data removed from campaigns, projects, assets, earnings, tasks, calendar. |
-| **All Google Stitch Screens** | Complete 28+ screens matching design specification | ✅ Done | All 28+ screens built and routing cleanly. |
-| **Unified Left Sidebar Navigation** | Persistent `AppShell.tsx` wrapper across all routes | ✅ Done | One unified sidebar for Workstation, Academy, and Operations. |
-| **Top Bar Clutter Cleanup** | Remove duplicate horizontal navbars across subpages | ✅ Done | Clean, single-sidebar experience with no duplicate headers. |
-| **Production Build Verification** | `npm run build` Turbopack compilation | ✅ Done | 29/29 routes compiled with 0 TypeScript/ESLint errors. |
-| **Database & Environment Setup** | Local MongoDB / Atlas connection in `.env.local` | ⏳ Pending | Next immediate step. |
-| **API & Database Wireup** | Connect Empty States to Mongoose models | ⏳ Pending | Link forms (New Cut, Import Campaign, Asset Upload) to DB. |
-| **Auth System & JWT Sessions** | Connect Login/Register to DB and cookies | ⏳ Pending | Complete auth lifecycle with password hashing. |
+| **Design System & Theme Overhaul** | Tailwind configuration, color palette, dark mode, custom hairline scrollbar | ✅ **Done** | Replaced neon purple with pro matte charcoal studio theme. |
+| **Hydration & Browser Quirks** | Suppress extension hydration mismatch in `layout.tsx` | ✅ **Done** | Fixed `cz-shortcut-listen` Chrome extension hydration errors. |
+| **Fake Data Elimination** | Remove hardcoded arrays from all hubs & replace with Empty States | ✅ **Done** | All mock data removed from campaigns, projects, assets, earnings, tasks, calendar. |
+| **All Google Stitch Screens** | Complete 31 screens matching design specification | ✅ **Done** | All 31 screens built and routing cleanly. |
+| **Unified Left Sidebar Navigation** | Persistent `AppShell.tsx` wrapper across all routes | ✅ **Done** | One unified sidebar for Workstation, Academy, and Operations. |
+| **Top Bar Clutter Cleanup** | Remove duplicate horizontal navbars across subpages | ✅ **Done** | Clean, single-sidebar experience with no duplicate headers. |
+| **Database & Environment Setup** | MongoDB Atlas Cloud cluster connected via `.env.local` | ✅ **Done** | Verified live handshake with `cluster0.hflgh4u.mongodb.net/clipflow`. |
+| **Authentication System (Full-Stack)** | Register, Login, Bcrypt salt hashing, HTTP-only JWT cookies | ✅ **Done** | 100% verified live in Atlas with real user documents. |
+| **AuthContext & User Caching** | React memory caching for session identity | ✅ **Done** | Zero unnecessary network roundtrips on internal route changes. |
+| **Logout & Session Revocation** | Dedicated `POST /api/auth/logout` + sidebar button | ✅ **Done** | Instantly expires cookie (`1970`) and hard-redirects to `/login`. |
+| **Dedicated Welcome Screen** | Personal greeting, cloud badge, and launch shortcuts | ✅ **Done** | `/welcome` route integrated for seamless post-login onboarding. |
+| **Input Validation & Security** | Zod schema validation & sanitized error handling | ✅ **Done** | Strict typing on all auth endpoints; zero DB enumeration leaks. |
+| **Database Compound Indexing** | Optimized MongoDB indexes on `Campaign.ts` | ✅ **Done** | B-Tree index on `{ availability: 1, source: 1 }` and `{ createdAt: -1 }`. |
+| **Live Dynamic Campaigns Wireup** | Form submissions save directly to Atlas & display in UI | ⏳ **Next Step** | Connect `/campaigns/new` and `/campaigns`. |
+| **Live Dynamic Projects Wireup** | Create cuts, stage timeline, and manage tasks in DB | ⏳ **Pending** | Connect `/projects/new` and `/projects`. |
 
 ---
 
-## 3. Screen & Route Directory
+## 3. Screen & Route Directory (31 Routes Verified)
 
 ### 🟢 Workstation Core
 - `/` — Production Control Center (Dashboard)
@@ -70,37 +76,19 @@ Unlike generic AI boilerplate templates, Clipflow is modeled after professional 
 - `/calendar` — Deadline Calendar & Submission Cutoff Tracker
 - `/settings` — Workstation & Profile Settings
 
-### ⚪ Authentication
-- `/login` — Workstation Secure Sign-In
-- `/register` — Creator Onboarding & Specialization Setup
+### ⚪ Authentication & Onboarding
+- `/login` — 100vh / 100vw Centered Workstation Sign-In
+- `/register` — 100vh / 100vw Creator Signup (Autofill disabled)
 - `/forgot-password` — Password Recovery Vault
+- `/welcome` — Creator Studio Onboarding & Launchpad
 
 ---
 
-## 4. Current Architecture Details
+## 4. Verified Backend Endpoints
 
-- **App Shell Component**: `src/components/AppShell.tsx`
-  - Automatically wraps all pages inside `src/app/layout.tsx`.
-  - Intelligently suppresses sidebar on auth routes (`/login`, `/register`, `/forgot-password`).
-  - Contains responsive mobile slide-out drawer with hamburger toggle.
-- **Data Models Defined**:
-  - `src/models/User.ts` — Creator account, role, bio, social links.
-  - `src/models/Campaign.ts` — Brand briefs, payout rates, requirements, status.
-  - `src/models/Project.ts` — Video cuts, stage, timeline, linked campaign.
-  - `src/models/Asset.ts` — Stems, B-roll, vectors, file storage metadata.
-  - `src/models/SocialAccount.ts` — Connected YouTube/Instagram OAuth accounts.
-  - `src/models/ClipJob.ts` — Automated clipping render tasks.
-
----
-
-## 5. Next Steps / Backend Roadmap
-
-1. **Database Connection**:
-   - Create/verify `.env.local` with `MONGODB_URI`.
-   - Test `src/lib/db.ts` database connection pooling.
-2. **API Endpoint Hookup**:
-   - `POST /api/campaigns` & `GET /api/campaigns` -> Connect to `/campaigns` and `/campaigns/new`.
-   - `POST /api/projects` & `GET /api/projects` -> Connect to `/projects` and `/projects/new`.
-   - `POST /api/auth/register` & `POST /api/auth/login` -> Store real users in database.
-3. **Live Dynamic State**:
-   - When a user imports a campaign or creates a project cut, it should immediately save to MongoDB and reflect in the UI in place of the empty state.
+- `POST /api/auth/register` — Validates inputs with Zod, hashes password via Bcrypt, saves to Atlas, issues 7-day JWT cookie.
+- `POST /api/auth/login` — Compares password hash, sets session cookie.
+- `GET /api/auth/me` — Reads HTTP-only cookie and returns authenticated user identity.
+- `POST /api/auth/logout` — Revokes session cookie and redirects user.
+- `GET /api/campaigns` & `POST /api/campaigns` — Ready for frontend form wireup.
+- `GET /api/projects` & `POST /api/projects` — Ready for frontend form wireup.
