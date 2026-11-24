@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Compass,
@@ -11,40 +11,62 @@ import {
   ArrowUpRight,
   Clock,
   DollarSign,
-  Film,
   Layers,
-  ChevronDown,
-  SlidersHorizontal,
-  ExternalLink,
-  ShieldCheck,
-  FolderPlus
+  Loader2
 } from 'lucide-react';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface CampaignItem {
-  id: string;
+  _id: string;
   title: string;
   brand: string;
   category: string;
   source: string;
   payoutModel: string;
-  rate: string;
-  estPool: string;
-  deadlineDays: number;
-  deadlineDate: string;
+  baseRate: number;
+  ratePer1kViews?: number;
+  estPool?: string;
+  deadlineDays?: number;
+  deadlineDate?: string;
   aspectRatio: string;
   difficulty: string;
   tags: string[];
-  description: string;
-  spotsLeft: number;
+  brief?: string;
+  spotsRemaining?: number;
 }
 
 export default function CampaignExplorerPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
-
-  // 100% Real Empty State: Zero hardcoded fake items
   const [campaigns, setCampaigns] = useState<CampaignItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Reusable custom hook for clean debounced search
+  const debouncedSearch = useDebounce(search, 250);
+
+  useEffect(() => {
+    async function loadCampaigns() {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams();
+        if (category !== 'All') queryParams.set('category', category);
+        if (debouncedSearch.trim()) queryParams.set('search', debouncedSearch.trim());
+
+        const res = await fetch(`/api/campaigns?${queryParams.toString()}`);
+        if (res.ok) {
+          const json = await res.json();
+          setCampaigns(json.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load campaigns:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCampaigns();
+  }, [category, debouncedSearch]);
 
   const toggleBookmark = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -56,20 +78,8 @@ export default function CampaignExplorerPage() {
     });
   };
 
-  const filtered = useMemo(() => {
-    return campaigns.filter((c) => {
-      const matchSearch =
-        c.title.toLowerCase().includes(search.toLowerCase()) ||
-        c.brand.toLowerCase().includes(search.toLowerCase()) ||
-        c.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()));
-      const matchCat = category === 'All' || c.category === category;
-      return matchSearch && matchCat;
-    });
-  }, [campaigns, search, category]);
-
   return (
     <div className="flex-1 flex flex-col min-w-0">
-
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -85,7 +95,7 @@ export default function CampaignExplorerPage() {
           <div className="flex items-center gap-2 text-xs">
             <span className="w-2 h-2 rounded-full bg-[#10b981]" />
             <span className="text-[#a1a1aa]">Active Ingestion:</span>
-            <span className="font-bold text-white font-mono">Ready for Ingest</span>
+            <span className="font-bold text-white font-mono">Live MongoDB Atlas</span>
           </div>
         </div>
 
@@ -102,12 +112,12 @@ export default function CampaignExplorerPage() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            {['All', 'AI', 'Gaming', 'Fintech', 'Lifestyle'].map((cat) => (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+            {['All', 'Tech & AI', 'Gaming', 'Fintech & Crypto', 'SaaS & Productivity', 'Lifestyle & Fitness'].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors ${
                   category === cat
                     ? 'bg-white/[0.1] text-white font-semibold border border-white/[0.12]'
                     : 'text-[#71717a] hover:text-white'
@@ -119,13 +129,19 @@ export default function CampaignExplorerPage() {
           </div>
         </div>
 
-        {/* Real Production Empty State */}
-        {filtered.length === 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="py-24 text-center rounded-xl bg-[#121215] border border-white/[0.08] flex flex-col items-center justify-center space-y-3">
+            <Loader2 className="w-8 h-8 text-[#6366f1] animate-spin" />
+            <div className="text-xs text-[#71717a] font-mono">Querying Atlas Cluster...</div>
+          </div>
+        ) : campaigns.length === 0 ? (
+          /* Empty State */
           <div className="py-24 text-center rounded-xl bg-[#121215] border border-white/[0.08] space-y-3 px-4">
             <Compass className="w-12 h-12 text-[#71717a] mx-auto opacity-30 stroke-[1.5]" />
             <div className="text-base font-semibold text-white">No campaigns imported yet</div>
             <p className="text-xs text-[#71717a] max-w-sm mx-auto leading-relaxed">
-              Import a bounty program via URL from Whop or Content Rewards, or configure an automated ingest feed adapter.
+              Import a bounty program via URL from Whop or Content Rewards, or create a custom brand campaign brief.
             </p>
             <div className="pt-3 flex items-center justify-center gap-3">
               <Link
@@ -145,10 +161,11 @@ export default function CampaignExplorerPage() {
             </div>
           </div>
         ) : (
+          /* Real Data Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((camp) => (
+            {campaigns.map((camp) => (
               <div
-                key={camp.id}
+                key={camp._id}
                 className="rounded-xl bg-[#121215] border border-white/[0.08] hover:border-white/[0.2] transition-all p-5 flex flex-col justify-between group"
               >
                 <div className="space-y-3">
@@ -162,7 +179,7 @@ export default function CampaignExplorerPage() {
                       </div>
 
                       <h3 className="font-bold text-sm text-white group-hover:text-[#818cf8] transition-colors leading-snug">
-                        <Link href={`/campaigns/${camp.id}`}>{camp.title}</Link>
+                        <Link href={`/campaigns/${camp._id}`}>{camp.title}</Link>
                       </h3>
 
                       <div className="text-xs text-[#71717a]">
@@ -171,10 +188,11 @@ export default function CampaignExplorerPage() {
                     </div>
 
                     <button
-                      onClick={(e) => toggleBookmark(camp.id, e)}
+                      onClick={(e) => toggleBookmark(camp._id, e)}
                       className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-[#71717a] hover:text-white border border-white/[0.08] transition-colors"
+                      title="Bookmark campaign"
                     >
-                      {savedIds.has(camp.id) ? (
+                      {savedIds.has(camp._id) ? (
                         <BookmarkCheck className="w-3.5 h-3.5 text-[#10b981]" />
                       ) : (
                         <Bookmark className="w-3.5 h-3.5" />
@@ -183,7 +201,7 @@ export default function CampaignExplorerPage() {
                   </div>
 
                   <p className="text-xs text-[#a1a1aa] line-clamp-2 leading-relaxed">
-                    {camp.description}
+                    {camp.brief || 'No summary brief provided for this campaign yet.'}
                   </p>
 
                   <div className="space-y-1.5 py-2.5 border-y border-white/[0.06] text-[11px] text-[#71717a]">
@@ -192,20 +210,42 @@ export default function CampaignExplorerPage() {
                       <span className="font-mono text-white">{camp.aspectRatio}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Deadline:</span>
-                      <span className="text-[#f59e0b] font-medium">{camp.deadlineDate} ({camp.deadlineDays}d)</span>
+                      <span>Difficulty / Payout:</span>
+                      <span className="text-white font-mono">{camp.difficulty} • {camp.payoutModel}</span>
                     </div>
+                    {camp.deadlineDays && (
+                      <div className="flex justify-between">
+                        <span>Deadline:</span>
+                        <span className="text-[#f59e0b] font-medium">{camp.deadlineDays} days remaining</span>
+                      </div>
+                    )}
                   </div>
+
+                  {camp.tags && camp.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1">
+                      {camp.tags.slice(0, 3).map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-0.5 rounded text-[10px] bg-white/[0.03] text-[#71717a] font-mono border border-white/[0.05]"
+                        >
+                          #{tag.replace(/^#/, '')}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-4 flex items-center justify-between gap-3">
+                <div className="pt-4 flex items-center justify-between gap-3 border-t border-white/[0.06] mt-4">
                   <div>
                     <div className="text-[10px] text-[#71717a] uppercase font-bold">Compensation</div>
-                    <div className="text-sm font-extrabold text-[#10b981] font-mono">{camp.rate}</div>
+                    <div className="text-sm font-extrabold text-[#10b981] font-mono">
+                      ${camp.baseRate}
+                      {camp.ratePer1kViews ? ` + $${camp.ratePer1kViews}/k` : ''}
+                    </div>
                   </div>
 
                   <Link
-                    href={`/campaigns/${camp.id}`}
+                    href={`/campaigns/${camp._id}`}
                     className="px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] text-white text-xs font-semibold border border-white/[0.08] transition-colors flex items-center gap-1"
                   >
                     <span>View Specs</span>

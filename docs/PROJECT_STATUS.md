@@ -1,7 +1,7 @@
 # Clipflow Creator Studio — Progress & Project Status Documentation
 
-> **Status**: Authentication & Session Layer 100% Complete & Verified (MongoDB Atlas Cloud Connected)  
-> **Next Phase**: Live Dynamic Workstation CRUD (Campaigns & Projects Wireup)  
+> **Status**: Authentication, Campaigns & Live Projects Modules 100% Complete & Verified (MongoDB Atlas Cloud Connected)  
+> **Next Phase**: Assets & Stem Vault Wireup (`/assets`, `/assets/upload`, `/assets/[id]`)  
 > **Last Updated**: November 24, 2026  
 > **Repository**: `CLIPFLOW`  
 > **Tech Stack**: Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS, Zod, Mongoose / MongoDB Atlas
@@ -35,9 +35,10 @@ Modeled after professional video workstation environments (DaVinci Resolve, Line
 | **Logout & Session Revocation** | Dedicated `POST /api/auth/logout` + sidebar button | ✅ **Done** | Instantly expires cookie (`1970`) and hard-redirects to `/login`. |
 | **Dedicated Welcome Screen** | Personal greeting, cloud badge, and launch shortcuts | ✅ **Done** | `/welcome` route integrated for seamless post-login onboarding. |
 | **Input Validation & Security** | Zod schema validation & sanitized error handling | ✅ **Done** | Strict typing on all auth endpoints; zero DB enumeration leaks. |
-| **Database Compound Indexing** | Optimized MongoDB indexes on `Campaign.ts` | ✅ **Done** | B-Tree index on `{ availability: 1, source: 1 }` and `{ createdAt: -1 }`. |
-| **Live Dynamic Campaigns Wireup** | Form submissions save directly to Atlas & display in UI | ⏳ **Next Step** | Connect `/campaigns/new` and `/campaigns`. |
-| **Live Dynamic Projects Wireup** | Create cuts, stage timeline, and manage tasks in DB | ⏳ **Pending** | Connect `/projects/new` and `/projects`. |
+| **Database Compound Indexing** | Optimized MongoDB indexes on `Campaign.ts` & `Project.ts` | ✅ **Done** | B-Tree compound index on `{ ownerId: 1, status: 1 }` and `{ createdAt: -1 }`. |
+| **Live Dynamic Campaigns Wireup** | Form submissions save directly to Atlas & display in UI | ✅ **Done** | Connected `/campaigns/new`, `/campaigns`, and `/campaigns/[id]`. |
+| **Live Dynamic Projects Wireup** | Create cuts, stage timeline, and manage projects in Atlas | ✅ **Done** | Connected `/projects/new`, `/projects`, and `/api/projects/[id]`. |
+| **Live Dynamic Assets Vault Wireup** | Asset storage, metadata tags, safe-zone preview | ⏳ **Next Step** | Connect `/assets`, `/assets/upload`, and `/assets/[id]`. |
 
 ---
 
@@ -45,13 +46,13 @@ Modeled after professional video workstation environments (DaVinci Resolve, Line
 
 ### 🟢 Workstation Core
 - `/` — Production Control Center (Dashboard)
-- `/campaigns` — Bounty & Campaign Explorer
-- `/campaigns/[id]` — Deep Campaign Brief & Payout Calculator
-- `/campaigns/new` — Manual & API Ingest Campaign Creator
+- `/campaigns` — Bounty & Campaign Explorer (Live MongoDB Atlas wireup)
+- `/campaigns/[id]` — Deep Campaign Brief & Payout Calculator (Live MongoDB Atlas wireup)
+- `/campaigns/new` — Manual & API Ingest Campaign Creator (Live MongoDB Atlas wireup)
 - `/campaigns/saved` — Saved Bookmarked Opportunities
 - `/campaigns/sources` — Ingest Sources & Scraping Connector
-- `/projects` — Active Video Projects Hub
-- `/projects/new` — Timeline Cut Provisioner
+- `/projects` — Active Video Projects Hub (Live MongoDB Atlas wireup)
+- `/projects/new` — Timeline Cut Provisioner 3-Step Wizard (Live MongoDB Atlas wireup)
 - `/projects/[id]` — Timeline Editor & Source Clip Stager
 - `/projects/[id]/plan` — AI Beat-Sheet & Hook Stager
 - `/projects/[id]/tasks` — Motion Design & Audio Task Board
@@ -78,17 +79,5 @@ Modeled after professional video workstation environments (DaVinci Resolve, Line
 
 ### ⚪ Authentication & Onboarding
 - `/login` — 100vh / 100vw Centered Workstation Sign-In
-- `/register` — 100vh / 100vw Creator Signup (Autofill disabled)
-- `/forgot-password` — Password Recovery Vault
-- `/welcome` — Creator Studio Onboarding & Launchpad
-
----
-
-## 4. Verified Backend Endpoints
-
-- `POST /api/auth/register` — Validates inputs with Zod, hashes password via Bcrypt, saves to Atlas, issues 7-day JWT cookie.
-- `POST /api/auth/login` — Compares password hash, sets session cookie.
-- `GET /api/auth/me` — Reads HTTP-only cookie and returns authenticated user identity.
-- `POST /api/auth/logout` — Revokes session cookie and redirects user.
-- `GET /api/campaigns` & `POST /api/campaigns` — Ready for frontend form wireup.
-- `GET /api/projects` & `POST /api/projects` — Ready for frontend form wireup.
+- `/register` — 100vh / 100vw Centered Creator Account Provisioner
+- `/welcome` — Studio Launch & Creator Onboarding Hub

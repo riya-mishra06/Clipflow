@@ -1,53 +1,66 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Film,
   Plus,
   Search,
-  Filter,
-  Clock,
   ArrowUpRight,
-  SlidersHorizontal,
-  CheckCircle2,
-  Folder
+  Folder,
+  Loader2,
+  Calendar,
+  Layers
 } from 'lucide-react';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface ProjectCardData {
-  id: string;
+  _id: string;
   title: string;
-  campaignTitle: string;
+  campaignTitle?: string;
   kind: 'campaign' | 'original' | 'practice';
   status: 'active' | 'in_review' | 'planned' | 'completed';
-  progress: number;
-  deadlineDate: string;
-  deadlineDays: number;
   aspectRatio: string;
-  clipsCount: number;
-  clipsApproved: number;
-  estPayout: string;
-  lastEdited: string;
+  resolution?: string;
+  targetDuration?: string;
+  estPayout?: string;
+  createdAt: string;
 }
 
 export default function ProjectsHubPage() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  
-  // Real initial state: Starts empty until created by user
   const [projects, setProjects] = useState<ProjectCardData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = projects.filter((p) => {
-    const matchSearch =
-      p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.campaignTitle.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === 'all' || p.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  // Reusable custom hook for debounced search
+  const debouncedSearch = useDebounce(search, 250);
+
+  useEffect(() => {
+    async function loadProjects() {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams();
+        if (statusFilter !== 'all') queryParams.set('status', statusFilter);
+        if (debouncedSearch.trim()) queryParams.set('search', debouncedSearch.trim());
+
+        const res = await fetch(`/api/projects?${queryParams.toString()}`);
+        if (res.ok) {
+          const json = await res.json();
+          setProjects(json.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load projects:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProjects();
+  }, [statusFilter, debouncedSearch]);
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
-
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-8 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -61,9 +74,17 @@ export default function ProjectsHubPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="px-3 py-1.5 rounded-lg bg-[#121215] border border-white/[0.08] text-xs font-mono text-[#a1a1aa]">
-              {projects.length} Active Cuts in Timeline
+            <div className="px-3 py-1.5 rounded-lg bg-[#121215] border border-white/[0.08] text-xs font-mono text-[#a1a1aa] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#10b981]" />
+              <span>{projects.length} Active Cuts in Timeline</span>
             </div>
+            <Link
+              href="/projects/new"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#6366f1] hover:bg-[#4f46e5] text-white text-xs font-semibold transition-colors shadow-sm"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Cut</span>
+            </Link>
           </div>
         </div>
 
@@ -97,8 +118,14 @@ export default function ProjectsHubPage() {
           </div>
         </div>
 
-        {/* Real Empty State */}
-        {filtered.length === 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="py-24 text-center rounded-xl bg-[#121215] border border-white/[0.08] flex flex-col items-center justify-center space-y-3">
+            <Loader2 className="w-8 h-8 text-[#6366f1] animate-spin" />
+            <div className="text-xs text-[#71717a] font-mono">Syncing timeline cuts from Atlas...</div>
+          </div>
+        ) : projects.length === 0 ? (
+          /* Empty State */
           <div className="py-24 text-center rounded-xl bg-[#121215] border border-white/[0.08] space-y-3 px-4">
             <Folder className="w-12 h-12 text-[#71717a] mx-auto opacity-30 stroke-[1.5]" />
             <div className="text-base font-semibold text-white">No video projects yet</div>
@@ -123,33 +150,50 @@ export default function ProjectsHubPage() {
             </div>
           </div>
         ) : (
+          /* Real Data Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((proj) => (
+            {projects.map((proj) => (
               <div
-                key={proj.id}
+                key={proj._id}
                 className="rounded-xl bg-[#121215] border border-white/[0.08] hover:border-white/[0.2] transition-all p-5 flex flex-col justify-between group"
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#6366f1]/10 text-[#818cf8]">
+                        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-[#6366f1]/10 text-[#818cf8] border border-[#6366f1]/20">
                           {proj.status.replace(/_/g, ' ')}
                         </span>
                         <span className="text-xs text-[#71717a] font-mono">{proj.aspectRatio}</span>
+                        {proj.resolution && (
+                          <span className="text-xs text-[#71717a] font-mono">• {proj.resolution}</span>
+                        )}
                       </div>
                       <h3 className="font-bold text-base text-white group-hover:text-[#818cf8] transition-colors">
-                        <Link href={`/projects/${proj.id}`}>{proj.title}</Link>
+                        <Link href={`/projects/${proj._id}`}>{proj.title}</Link>
                       </h3>
                       <div className="text-xs text-[#71717a]">
-                        Attached to: <span className="text-[#a1a1aa]">{proj.campaignTitle}</span>
+                        Attached to: <span className="text-[#a1a1aa]">{proj.campaignTitle || 'Direct Cut'}</span>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="text-[10px] text-[#71717a] uppercase font-bold">Bounty Yield</div>
-                      <div className="text-sm font-extrabold text-[#10b981] font-mono">{proj.estPayout}</div>
+                      <div className="text-[10px] text-[#71717a] uppercase font-bold">Est. Yield</div>
+                      <div className="text-sm font-extrabold text-[#10b981] font-mono">
+                        {proj.estPayout || '$140.00'}
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs text-[#71717a]">
+                    <span className="font-mono">{proj.targetDuration || '45s cut'}</span>
+                    <Link
+                      href={`/projects/${proj._id}`}
+                      className="text-[#818cf8] hover:text-white flex items-center gap-1 font-medium"
+                    >
+                      <span>Open Workspace</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
                   </div>
                 </div>
               </div>
