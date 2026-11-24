@@ -139,20 +139,20 @@ export default function CampaignDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e13] text-[#e2e2e9] font-sans antialiased flex flex-col">
+    <div className="flex-1 flex flex-col min-w-0">
       {/* Top Studio Bar */}
-      <header className="sticky top-0 z-40 bg-[#0c0e13]/90 backdrop-blur-md border-b border-[#2d2f39]/50 px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-[white/[0.08]]/50 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href="/campaigns"
-            className="p-1.5 rounded-lg bg-[#111318] hover:bg-[#1e2029] border border-[#2d2f39] text-[#9496a1] hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-[#9496a1] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#1e2029] text-[#cebdff] border border-[#2d2f39]">
+              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[white/[0.04]] text-[#cebdff] border border-[white/[0.08]]">
                 {campaign.source}
               </span>
               <span className="text-xs text-[#9496a1] font-mono">ID: {campaign.id}</span>
@@ -169,7 +169,7 @@ export default function CampaignDetailsPage() {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium transition-colors ${
               isSaved
                 ? 'bg-[#4edea3]/10 border-[#4edea3]/30 text-[#4edea3]'
-                : 'bg-[#111318] hover:bg-[#1e2029] border-[#2d2f39] text-[#9496a1] hover:text-white'
+                : 'bg-[#121215] hover:bg-[white/[0.04]] border-[white/[0.08]] text-[#9496a1] hover:text-white'
             }`}
           >
             {isSaved ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
@@ -178,7 +178,7 @@ export default function CampaignDetailsPage() {
 
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111318] hover:bg-[#1e2029] border border-[#2d2f39] text-xs font-medium text-[#9496a1] hover:text-white transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-xs font-medium text-[#9496a1] hover:text-white transition-colors"
           >
             {copiedLink ? <Check className="w-3.5 h-3.5 text-[#4edea3]" /> : <Share2 className="w-3.5 h-3.5" />}
             <span>{copiedLink ? 'Copied' : 'Share'}</span>
@@ -186,7 +186,7 @@ export default function CampaignDetailsPage() {
 
           <button
             onClick={handleCreateProject}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#111318] font-bold text-xs transition-all shadow-md shadow-[#cebdff]/10"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#121215] font-bold text-xs transition-all shadow-md shadow-[#cebdff]/10"
           >
             <FolderPlus className="w-4 h-4" />
             <span>Start Project Cut</span>
@@ -199,7 +199,7 @@ export default function CampaignDetailsPage() {
         {/* Left Column (8 cols): Specifications & Details */}
         <div className="lg:col-span-8 space-y-6">
           {/* Hero Banner Header */}
-          <div className="relative rounded-2xl bg-gradient-to-br from-[#161821] via-[#111318] to-[#0c0e13] border border-[#2d2f39] p-6 overflow-hidden">
+          <div className="relative rounded-2xl bg-gradient-to-br from-[#161821] via-[#121215] to-[#09090b] border border-[white/[0.08]] p-6 overflow-hidden">
             <div className="absolute top-0 right-0 w-80 h-80 bg-[#cebdff]/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
@@ -230,20 +230,20 @@ export default function CampaignDetailsPage() {
             </div>
 
             {/* Quick Specs Matrix */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[#2d2f39]/60">
-              <div className="rounded-xl bg-[#0c0e13]/60 p-3 border border-[#2d2f39]/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[white/[0.08]]/60">
+              <div className="rounded-xl bg-[#09090b]/60 p-3 border border-[white/[0.08]]/50">
                 <div className="text-[10px] text-[#9496a1] uppercase font-semibold">Aspect Ratio</div>
                 <div className="text-xs font-bold text-white mt-0.5 font-mono">9:16 Vertical</div>
               </div>
-              <div className="rounded-xl bg-[#0c0e13]/60 p-3 border border-[#2d2f39]/50">
+              <div className="rounded-xl bg-[#09090b]/60 p-3 border border-[white/[0.08]]/50">
                 <div className="text-[10px] text-[#9496a1] uppercase font-semibold">Framerate</div>
                 <div className="text-xs font-bold text-white mt-0.5 font-mono">60 FPS Strict</div>
               </div>
-              <div className="rounded-xl bg-[#0c0e13]/60 p-3 border border-[#2d2f39]/50">
+              <div className="rounded-xl bg-[#09090b]/60 p-3 border border-[white/[0.08]]/50">
                 <div className="text-[10px] text-[#9496a1] uppercase font-semibold">Duration Target</div>
                 <div className="text-xs font-bold text-white mt-0.5 font-mono">30s - 60s max</div>
               </div>
-              <div className="rounded-xl bg-[#0c0e13]/60 p-3 border border-[#2d2f39]/50">
+              <div className="rounded-xl bg-[#09090b]/60 p-3 border border-[white/[0.08]]/50">
                 <div className="text-[10px] text-[#9496a1] uppercase font-semibold">Resolution</div>
                 <div className="text-xs font-bold text-[#cebdff] mt-0.5 font-mono">1080p / 4K</div>
               </div>
@@ -251,7 +251,7 @@ export default function CampaignDetailsPage() {
           </div>
 
           {/* Nav Tabs */}
-          <div className="flex items-center gap-2 border-b border-[#2d2f39] pb-px">
+          <div className="flex items-center gap-2 border-b border-[white/[0.08]] pb-px">
             {[
               { id: 'overview', label: 'Synopsis & Brief' },
               { id: 'guidelines', label: 'Production Guidelines' },
@@ -263,8 +263,8 @@ export default function CampaignDetailsPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-4 py-2.5 text-xs font-semibold rounded-t-xl transition-colors border-b-2 ${
                   activeTab === tab.id
-                    ? 'border-[#cebdff] text-white bg-[#111318]'
-                    : 'border-transparent text-[#9496a1] hover:text-white hover:bg-[#111318]/50'
+                    ? 'border-[#cebdff] text-white bg-[#121215]'
+                    : 'border-transparent text-[#9496a1] hover:text-white hover:bg-[#121215]/50'
                 }`}
               >
                 {tab.label}
@@ -275,7 +275,7 @@ export default function CampaignDetailsPage() {
           {/* Tab 1: Overview */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-4">
+              <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-4">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider font-headline flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[#cebdff]" />
                   <span>Creative Brief Synopsis</span>
@@ -284,13 +284,13 @@ export default function CampaignDetailsPage() {
                   {campaign.synopsis}
                 </p>
 
-                <div className="pt-4 border-t border-[#2d2f39]/60">
+                <div className="pt-4 border-t border-[white/[0.08]]/60">
                   <div className="text-xs font-semibold text-white mb-2">Desired Brand Tone & Mood:</div>
                   <div className="flex flex-wrap gap-2">
                     {campaign.brandTone.map((tone) => (
                       <span
                         key={tone}
-                        className="px-3 py-1 rounded-lg bg-[#1e2029] text-[#cebdff] border border-[#2d2f39] text-xs font-medium"
+                        className="px-3 py-1 rounded-lg bg-[white/[0.04]] text-[#cebdff] border border-[white/[0.08]] text-xs font-medium"
                       >
                         ⚡ {tone}
                       </span>
@@ -301,7 +301,7 @@ export default function CampaignDetailsPage() {
 
               {/* Submission Rules & Eligibility */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-3">
+                <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-3">
                   <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 text-[#cebdff]" />
                     <span>Submission Rules</span>
@@ -316,7 +316,7 @@ export default function CampaignDetailsPage() {
                   </ul>
                 </div>
 
-                <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-3">
+                <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-3">
                   <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-[#4edea3]" />
                     <span>Creator Eligibility</span>
@@ -336,27 +336,27 @@ export default function CampaignDetailsPage() {
 
           {/* Tab 2: Guidelines */}
           {activeTab === 'guidelines' && (
-            <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-6">
+            <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-6">
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-headline">
                 Technical Production Specifications
               </h3>
 
               <div className="space-y-4 text-xs">
-                <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2">
+                <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2">
                   <div className="text-white font-semibold">1. Hook & Pacing Architecture</div>
                   <p className="text-[#9496a1] leading-relaxed">
                     First 2 seconds must feature a visual pattern interrupt (zooms, speed ramp, or abrupt text flash). Avoid lengthy intro titles or branding cards before the hook.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2">
+                <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2">
                   <div className="text-white font-semibold">2. Audio Loudness & Stems</div>
                   <p className="text-[#9496a1] leading-relaxed">
                     Integrated dialogue must hover between -14 LUFS to -16 LUFS. SFX sound drops should be side-chained cleanly under the voiceover. Use the provided .wav audio stems.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2">
+                <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2">
                   <div className="text-white font-semibold">3. Safe Zones for Instagram Reels & TikTok</div>
                   <p className="text-[#9496a1] leading-relaxed">
                     Keep typography within the central 1080x1400 box. Leave 220px top clear of headers and 300px bottom clear of UI player buttons and captions.
@@ -368,7 +368,7 @@ export default function CampaignDetailsPage() {
 
           {/* Tab 3: Assets */}
           {activeTab === 'assets' && (
-            <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-4">
+            <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider font-headline">
                   Official Brand Assets Pack
@@ -380,10 +380,10 @@ export default function CampaignDetailsPage() {
                 {campaign.mandatoryAssets.map((asset, i) => (
                   <div
                     key={i}
-                    className="p-3.5 rounded-xl bg-[#0c0e13] border border-[#2d2f39] flex items-center justify-between hover:border-[#cebdff]/40 transition-colors"
+                    className="p-3.5 rounded-xl bg-[#09090b] border border-[white/[0.08]] flex items-center justify-between hover:border-[#cebdff]/40 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-[#1e2029] text-[#cebdff]">
+                      <div className="p-2 rounded-lg bg-[white/[0.04]] text-[#cebdff]">
                         <Film className="w-4 h-4" />
                       </div>
                       <div>
@@ -394,7 +394,7 @@ export default function CampaignDetailsPage() {
                       </div>
                     </div>
 
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1e2029] hover:bg-[#2d2f39] text-[#cebdff] hover:text-white text-xs font-medium border border-[#2d2f39] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#cebdff] hover:text-white text-xs font-medium border border-[white/[0.08]] transition-colors">
                       <Download className="w-3.5 h-3.5" />
                       <span>Download</span>
                     </button>
@@ -406,19 +406,19 @@ export default function CampaignDetailsPage() {
 
           {/* Tab 4: Change History */}
           {activeTab === 'history' && (
-            <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-4">
+            <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-4">
               <h3 className="text-sm font-bold text-white uppercase tracking-wider font-headline flex items-center gap-2">
                 <History className="w-4 h-4 text-[#cebdff]" />
                 <span>Audited Bounty Modifications</span>
               </h3>
 
-              <div className="relative border-l border-[#2d2f39] ml-3 pl-5 space-y-6">
+              <div className="relative border-l border-[white/[0.08]] ml-3 pl-5 space-y-6">
                 {campaign.changeLogs.map((log, idx) => (
                   <div key={idx} className="relative group">
-                    <div className="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-[#cebdff] border-2 border-[#111318]" />
+                    <div className="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-[#cebdff] border-2 border-[#121215]" />
                     <div className="flex items-center gap-2 text-xs">
                       <span className="text-[#9496a1] font-mono">{log.date}</span>
-                      <span className="px-2 py-0.5 rounded-md bg-[#1e2029] text-white font-semibold border border-[#2d2f39]">
+                      <span className="px-2 py-0.5 rounded-md bg-[white/[0.04]] text-white font-semibold border border-[white/[0.08]]">
                         {log.action}
                       </span>
                     </div>
@@ -433,7 +433,7 @@ export default function CampaignDetailsPage() {
         {/* Right Column (4 cols): Sticky Payout Calculator & Action Hub */}
         <div className="lg:col-span-4 space-y-6">
           {/* Payout Estimator Widget */}
-          <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-5 sticky top-24">
+          <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-5 sticky top-24">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-[#4edea3]" />
@@ -490,7 +490,7 @@ export default function CampaignDetailsPage() {
             </div>
 
             {/* Computation Summary Card */}
-            <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2.5">
+            <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2.5">
               <div className="flex justify-between text-xs text-[#9496a1]">
                 <span>Base Cut Bounties ({clipsCount} × ${campaign.baseRate}):</span>
                 <span className="text-white font-mono">${estimatedBaseEarnings.toFixed(2)}</span>
@@ -499,7 +499,7 @@ export default function CampaignDetailsPage() {
                 <span>Performance CPM Pool:</span>
                 <span className="text-white font-mono">${estimatedViewBonus.toFixed(2)}</span>
               </div>
-              <div className="pt-2 border-t border-[#2d2f39] flex justify-between items-baseline">
+              <div className="pt-2 border-t border-[white/[0.08]] flex justify-between items-baseline">
                 <span className="text-xs font-bold text-white">Estimated Yield:</span>
                 <span className="text-xl font-extrabold text-[#4edea3] font-mono">
                   ${totalEstimatedEarnings.toFixed(2)}
@@ -510,7 +510,7 @@ export default function CampaignDetailsPage() {
             {/* Start Project CTA */}
             <button
               onClick={handleCreateProject}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#cebdff] to-[#d0bcff] hover:from-[#d0bcff] hover:to-[#cebdff] text-[#111318] font-extrabold text-sm transition-all shadow-lg shadow-[#cebdff]/15 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#cebdff] to-[#d0bcff] hover:from-[#d0bcff] hover:to-[#cebdff] text-[#121215] font-extrabold text-sm transition-all shadow-lg shadow-[#cebdff]/15 flex items-center justify-center gap-2"
             >
               <FolderPlus className="w-4 h-4" />
               <span>Initialize Studio Project</span>
@@ -522,7 +522,7 @@ export default function CampaignDetailsPage() {
             </div>
 
             {/* Additional Metadata card */}
-            <div className="p-3.5 rounded-xl bg-[#161821] border border-[#2d2f39] space-y-2 text-xs">
+            <div className="p-3.5 rounded-xl bg-[#161821] border border-[white/[0.08]] space-y-2 text-xs">
               <div className="text-[#cebdff] font-semibold">Direct Source Verification</div>
               <p className="text-[11px] text-[#9496a1] leading-relaxed">
                 This campaign was validated via external OAuth connection. Submissions are reviewed automatically within 48h.

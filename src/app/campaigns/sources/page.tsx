@@ -87,13 +87,13 @@ export default function CampaignSourcesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e13] text-[#e2e2e9] font-sans antialiased flex flex-col">
+    <div className="flex-1 flex flex-col min-w-0">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-[#0c0e13]/90 backdrop-blur-md border-b border-[#2d2f39]/50 px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-[white/[0.08]]/50 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href="/campaigns"
-            className="p-1.5 rounded-lg bg-[#111318] hover:bg-[#1e2029] border border-[#2d2f39] text-[#9496a1] hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-[#9496a1] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
@@ -108,7 +108,7 @@ export default function CampaignSourcesPage() {
         <button
           onClick={handleRefreshAll}
           disabled={isRefreshing}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-[#cebdff] hover:text-white text-xs font-semibold border border-[#2d2f39] transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#cebdff] hover:text-white text-xs font-semibold border border-[white/[0.08]] transition-colors"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
           <span>{isRefreshing ? 'Checking...' : 'Ping All Adapters'}</span>
@@ -118,7 +118,7 @@ export default function CampaignSourcesPage() {
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 space-y-6">
         {/* Metric Cards Banner */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-5 rounded-2xl bg-[#111318] border border-[#2d2f39] space-y-1">
+          <div className="p-5 rounded-2xl bg-[#121215] border border-[white/[0.08]] space-y-1">
             <div className="flex items-center justify-between text-xs text-[#9496a1]">
               <span>Active Feed Sources</span>
               <Radio className="w-4 h-4 text-[#4edea3]" />
@@ -127,7 +127,7 @@ export default function CampaignSourcesPage() {
             <div className="text-[11px] text-[#4edea3] font-medium">99.98% ingestion uptime</div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#111318] border border-[#2d2f39] space-y-1">
+          <div className="p-5 rounded-2xl bg-[#121215] border border-[white/[0.08]] space-y-1">
             <div className="flex items-center justify-between text-xs text-[#9496a1]">
               <span>Synchronized Bounties</span>
               <Zap className="w-4 h-4 text-[#cebdff]" />
@@ -136,7 +136,7 @@ export default function CampaignSourcesPage() {
             <div className="text-[11px] text-[#cebdff] font-medium">+12 incoming today</div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#111318] border border-[#2d2f39] space-y-1">
+          <div className="p-5 rounded-2xl bg-[#121215] border border-[white/[0.08]] space-y-1">
             <div className="flex items-center justify-between text-xs text-[#9496a1]">
               <span>Average API Latency</span>
               <Activity className="w-4 h-4 text-[#cebdff]" />
@@ -147,8 +147,8 @@ export default function CampaignSourcesPage() {
         </div>
 
         {/* Adapters Directory */}
-        <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] overflow-hidden">
-          <div className="p-5 border-b border-[#2d2f39] flex items-center justify-between">
+        <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] overflow-hidden">
+          <div className="p-5 border-b border-[white/[0.08]] flex items-center justify-between">
             <div>
               <h2 className="text-base font-bold text-white font-headline">Connected Ingest Adapters</h2>
               <p className="text-xs text-[#9496a1] mt-0.5">
@@ -157,7 +157,7 @@ export default function CampaignSourcesPage() {
             </div>
           </div>
 
-          <div className="divide-y divide-[#2d2f39]">
+          <div className="divide-y divide-[white/[0.08]]">
             {sources.map((src) => (
               <div key={src.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1 flex-1">
@@ -205,7 +205,7 @@ export default function CampaignSourcesPage() {
                     <div className="text-[#9496a1]">{src.lastSync}</div>
                   </div>
 
-                  <button className="px-3 py-1.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-[#cebdff] hover:text-white text-xs font-medium border border-[#2d2f39] transition-colors">
+                  <button className="px-3 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#cebdff] hover:text-white text-xs font-medium border border-[white/[0.08]] transition-colors">
                     Re-sync
                   </button>
                 </div>
@@ -215,7 +215,7 @@ export default function CampaignSourcesPage() {
         </div>
 
         {/* Security & Webhook info */}
-        <div className="p-4 rounded-xl bg-[#161821] border border-[#2d2f39] flex items-center justify-between text-xs text-[#9496a1]">
+        <div className="p-4 rounded-xl bg-[#161821] border border-[white/[0.08]] flex items-center justify-between text-xs text-[#9496a1]">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-[#4edea3]" />
             <span>All incoming payload signatures verified with HMAC-SHA256 tokens.</span>

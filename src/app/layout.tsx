@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
+import AppShell from '@/components/AppShell';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`dark ${inter.variable} ${plusJakartaSans.variable}`}>
-      <body className="bg-surface-container-lowest text-on-surface antialiased">
-        {children}
+    <html lang="en" className={`dark ${inter.variable} ${plusJakartaSans.variable}`} suppressHydrationWarning>
+      <body className="bg-[#09090b] text-[#f4f4f5] antialiased" suppressHydrationWarning>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

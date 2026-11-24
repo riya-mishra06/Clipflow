@@ -50,13 +50,13 @@ function NewProjectForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e13] text-[#e2e2e9] font-sans antialiased flex flex-col">
+    <div className="flex-1 flex flex-col min-w-0">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-[#0c0e13]/90 backdrop-blur-md border-b border-[#2d2f39]/50 px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-[white/[0.08]]/50 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href="/projects"
-            className="p-1.5 rounded-lg bg-[#111318] hover:bg-[#1e2029] border border-[#2d2f39] text-[#9496a1] hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-[#9496a1] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
@@ -75,29 +75,29 @@ function NewProjectForm() {
               step >= 1 ? 'bg-[#cebdff]/20 text-[#cebdff] font-semibold' : 'text-[#9496a1]'
             }`}
           >
-            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#111318] text-[10px] font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#121215] text-[10px] font-bold flex items-center justify-center">
               1
             </span>
             <span>Metadata</span>
           </div>
-          <div className="h-px w-4 bg-[#2d2f39]" />
+          <div className="h-px w-4 bg-[white/[0.08]]" />
           <div
             className={`flex items-center gap-1.5 px-3 py-1 rounded-full ${
               step >= 2 ? 'bg-[#cebdff]/20 text-[#cebdff] font-semibold' : 'text-[#9496a1]'
             }`}
           >
-            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#111318] text-[10px] font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#121215] text-[10px] font-bold flex items-center justify-center">
               2
             </span>
             <span>Format Specs</span>
           </div>
-          <div className="h-px w-4 bg-[#2d2f39]" />
+          <div className="h-px w-4 bg-[white/[0.08]]" />
           <div
             className={`flex items-center gap-1.5 px-3 py-1 rounded-full ${
               step >= 3 ? 'bg-[#cebdff]/20 text-[#cebdff] font-semibold' : 'text-[#9496a1]'
             }`}
           >
-            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#111318] text-[10px] font-bold flex items-center justify-center">
+            <span className="w-4 h-4 rounded-full bg-[#cebdff] text-[#121215] text-[10px] font-bold flex items-center justify-center">
               3
             </span>
             <span>AI Script Prep</span>
@@ -113,7 +113,7 @@ function NewProjectForm() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-[#111318] border border-[#2d2f39] space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 rounded-2xl bg-[#121215] border border-[white/[0.08]] space-y-6">
           {/* Step 1: Project Identity */}
           {step === 1 && (
             <div className="space-y-5 animate-in fade-in">
@@ -125,7 +125,7 @@ function NewProjectForm() {
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="e.g. NeonPulse Cyberpunk Fast-Cut Edition"
-                  className="w-full bg-[#161821] border border-[#2d2f39] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#9496a1] focus:outline-none focus:border-[#cebdff]"
+                  className="w-full bg-[#161821] border border-[white/[0.08]] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#9496a1] focus:outline-none focus:border-[#cebdff]"
                 />
               </div>
 
@@ -144,7 +144,7 @@ function NewProjectForm() {
                       className={`p-3.5 rounded-xl border text-left transition-colors ${
                         formData.kind === kind.id
                           ? 'bg-[#cebdff]/10 border-[#cebdff] text-white'
-                          : 'bg-[#161821] border-[#2d2f39] text-[#9496a1] hover:text-white'
+                          : 'bg-[#161821] border-[white/[0.08]] text-[#9496a1] hover:text-white'
                       }`}
                     >
                       <div className="text-xs font-bold">{kind.label}</div>
@@ -155,7 +155,7 @@ function NewProjectForm() {
               </div>
 
               {formData.campaignTitle && (
-                <div className="p-3.5 rounded-xl bg-[#0c0e13] border border-[#2d2f39] flex items-center justify-between text-xs">
+                <div className="p-3.5 rounded-xl bg-[#09090b] border border-[white/[0.08]] flex items-center justify-between text-xs">
                   <div className="space-y-0.5">
                     <span className="text-[10px] text-[#9496a1] uppercase font-semibold">Attached Campaign</span>
                     <div className="font-bold text-white">{formData.campaignTitle}</div>
@@ -170,7 +170,7 @@ function NewProjectForm() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-6 py-2.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#111318] text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md shadow-[#cebdff]/15"
+                  className="px-6 py-2.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#121215] text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md shadow-[#cebdff]/15"
                 >
                   <span>Next: Resolution & Specs</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -188,7 +188,7 @@ function NewProjectForm() {
                   <select
                     value={formData.targetPlatform}
                     onChange={(e) => setFormData({ ...formData, targetPlatform: e.target.value })}
-                    className="w-full bg-[#161821] border border-[#2d2f39] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#cebdff]"
+                    className="w-full bg-[#161821] border border-[white/[0.08]] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#cebdff]"
                   >
                     <option value="Instagram Reels & TikTok">Instagram Reels & TikTok (9:16)</option>
                     <option value="YouTube Shorts">YouTube Shorts (9:16)</option>
@@ -202,7 +202,7 @@ function NewProjectForm() {
                   <select
                     value={formData.resolution}
                     onChange={(e) => setFormData({ ...formData, resolution: e.target.value })}
-                    className="w-full bg-[#161821] border border-[#2d2f39] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#cebdff]"
+                    className="w-full bg-[#161821] border border-[white/[0.08]] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#cebdff]"
                   >
                     <option value="1080x1920 (60fps)">1080x1920 @ 60 FPS (Recommended)</option>
                     <option value="4K UHD 2160x3840 (60fps)">4K UHD 2160x3840 @ 60 FPS</option>
@@ -222,7 +222,7 @@ function NewProjectForm() {
                       className={`py-2.5 rounded-xl border text-xs font-semibold transition-colors ${
                         formData.targetDuration === dur
                           ? 'bg-[#cebdff]/20 border-[#cebdff] text-white'
-                          : 'bg-[#161821] border-[#2d2f39] text-[#9496a1] hover:text-white'
+                          : 'bg-[#161821] border-[white/[0.08]] text-[#9496a1] hover:text-white'
                       }`}
                     >
                       {dur}
@@ -235,14 +235,14 @@ function NewProjectForm() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-4 py-2.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-[#9496a1] hover:text-white text-xs font-medium border border-[#2d2f39]"
+                  className="px-4 py-2.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#9496a1] hover:text-white text-xs font-medium border border-[white/[0.08]]"
                 >
                   Back
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="px-6 py-2.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#111318] text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md shadow-[#cebdff]/15"
+                  className="px-6 py-2.5 rounded-xl bg-[#cebdff] hover:bg-[#d0bcff] text-[#121215] text-xs font-bold transition-colors flex items-center gap-1.5 shadow-md shadow-[#cebdff]/15"
                 >
                   <span>Next: Concept Hook</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -264,14 +264,14 @@ function NewProjectForm() {
                   value={formData.conceptHook}
                   onChange={(e) => setFormData({ ...formData, conceptHook: e.target.value })}
                   placeholder="Describe your 0-3 second opening hook..."
-                  className="w-full bg-[#161821] border border-[#2d2f39] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#9496a1] focus:outline-none focus:border-[#cebdff]"
+                  className="w-full bg-[#161821] border border-[white/[0.08]] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#9496a1] focus:outline-none focus:border-[#cebdff]"
                 />
                 <div className="text-[11px] text-[#9496a1]">
                   Our AI Script Copilot will generate kinetic typography cues and pacing markers based on this premise.
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2 text-xs">
+              <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2 text-xs">
                 <div className="text-[#cebdff] font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-[#4edea3]" />
                   <span>Workspace Ready for Generation</span>
@@ -285,14 +285,14 @@ function NewProjectForm() {
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-4 py-2.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-[#9496a1] hover:text-white text-xs font-medium border border-[#2d2f39]"
+                  className="px-4 py-2.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#9496a1] hover:text-white text-xs font-medium border border-[white/[0.08]]"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#cebdff] to-[#d0bcff] hover:from-[#d0bcff] hover:to-[#cebdff] text-[#111318] text-xs font-extrabold transition-colors shadow-lg shadow-[#cebdff]/20 flex items-center gap-1.5"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#cebdff] to-[#d0bcff] hover:from-[#d0bcff] hover:to-[#cebdff] text-[#121215] text-xs font-extrabold transition-colors shadow-lg shadow-[#cebdff]/20 flex items-center gap-1.5"
                 >
                   {isSubmitting ? (
                     <>
@@ -319,7 +319,7 @@ export default function NewProjectPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#0c0e13] text-white flex items-center justify-center text-xs">
+        <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center text-xs">
           Loading project wizard...
         </div>
       }

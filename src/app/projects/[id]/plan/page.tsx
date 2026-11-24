@@ -70,13 +70,13 @@ export default function ProjectPlanPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e13] text-[#e2e2e9] font-sans antialiased flex flex-col">
+    <div className="flex-1 flex flex-col min-w-0">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-[#0c0e13]/90 backdrop-blur-md border-b border-[#2d2f39]/50 px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-[white/[0.08]]/50 px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
             href={`/projects/${projectId}`}
-            className="p-1.5 rounded-lg bg-[#111318] hover:bg-[#1e2029] border border-[#2d2f39] text-[#9496a1] hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-[#9496a1] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
@@ -91,7 +91,7 @@ export default function ProjectPlanPage() {
         <div className="flex items-center gap-3">
           <Link
             href={`/projects/${projectId}/tasks`}
-            className="px-3.5 py-1.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-white text-xs font-semibold border border-[#2d2f39] transition-colors"
+            className="px-3.5 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-white text-xs font-semibold border border-[white/[0.08]] transition-colors"
           >
             Go to Tasks →
           </Link>
@@ -100,7 +100,7 @@ export default function ProjectPlanPage() {
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 space-y-6">
         {/* Hook Generator Prompt Box */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-[#161821] to-[#111318] border border-[#2d2f39] space-y-4">
+        <div className="p-6 rounded-2xl bg-gradient-to-br from-[#161821] to-[#121215] border border-[white/[0.08]] space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#cebdff]" />
@@ -112,21 +112,21 @@ export default function ProjectPlanPage() {
             <button
               onClick={handleRegenerateHook}
               disabled={isGenerating}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1e2029] hover:bg-[#2d2f39] text-[#cebdff] text-xs font-semibold border border-[#2d2f39] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#cebdff] text-xs font-semibold border border-[white/[0.08]] transition-colors"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
               <span>{isGenerating ? 'Re-synthesizing...' : 'New Hook Angle'}</span>
             </button>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39]">
+          <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]]">
             <span className="text-[10px] text-[#9496a1] uppercase font-bold">Selected Retention Premise:</span>
             <div className="text-base font-bold text-white mt-1">"{hookIdea}"</div>
           </div>
         </div>
 
         {/* Script & Visual Cue Breakdown */}
-        <div className="rounded-2xl bg-[#111318] border border-[#2d2f39] p-6 space-y-5">
+        <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-5">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-white font-headline">Scene-by-Scene Pacing Blueprint</h3>
@@ -140,11 +140,11 @@ export default function ProjectPlanPage() {
             {scriptSections.map((sec, idx) => (
               <div
                 key={idx}
-                className="p-4 rounded-xl bg-[#0c0e13] border border-[#2d2f39] space-y-2 hover:border-[#cebdff]/40 transition-colors"
+                className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2 hover:border-[#cebdff]/40 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[#1e2029] text-[#cebdff] font-mono text-[11px] font-bold">
+                    <span className="px-2 py-0.5 rounded bg-[white/[0.04]] text-[#cebdff] font-mono text-[11px] font-bold">
                       {sec.sec}
                     </span>
                     <span className="text-xs font-bold text-white">{sec.label}</span>
@@ -152,7 +152,7 @@ export default function ProjectPlanPage() {
 
                   <button
                     onClick={() => handleCopy(`${sec.dialogue}\nVisual: ${sec.visualCue}`, idx)}
-                    className="p-1.5 rounded-lg bg-[#161821] hover:bg-[#1e2029] text-[#9496a1] hover:text-white transition-colors"
+                    className="p-1.5 rounded-lg bg-[#161821] hover:bg-[white/[0.04]] text-[#9496a1] hover:text-white transition-colors"
                     title="Copy scene"
                   >
                     {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-[#4edea3]" /> : <Copy className="w-3.5 h-3.5" />}
