@@ -1,29 +1,46 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
 import { signSessionToken } from '@/lib/auth';
 
+const LoginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email({ message: 'Please provide a valid email address' })
+    .toLowerCase(),
+  password: z
+    .string()
+    .min(1, { message: 'Password is required' }),
+});
+
 export async function POST(req: Request) {
   try {
     await connectDB();
-    const { email, password } = await req.json();
+    const body = await req.json();
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      );
+    // 1. Zod Schema Validation
+    const validation = LoginSchema.safeParse(body);
+    if (!validation.success) {
+      const firstError = validation.error.issues[0]?.message || 'Invalid email or password format';
+      return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const { email, password } = validation.data;
+
+    // 2. Lookup user
+    const user = await User.findOne({ email });
     if (!user) {
+      // Intentionally generic to prevent user enumeration
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
+    // 3. Compare hash
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return NextResponse.json(
@@ -32,6 +49,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // 4. Generate JWT
     const token = signSessionToken({
       userId: user._id.toString(),
       email: user.email,
@@ -56,6 +74,11 @@ export async function POST(req: Request) {
 
     return res;
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Login failed' }, { status: 500 });
+    // Sanitize error logging: never expose raw DB errors
+    console.error('Login internal error:', err);
+    return NextResponse.json(
+      { error: 'An unexpected error occurred during login. Please try again.' },
+      { status: 500 }
+    );
   }
 }

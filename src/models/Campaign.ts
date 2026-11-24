@@ -41,5 +41,9 @@ const CampaignSchema = new Schema<ICampaign>(
   { timestamps: true }
 );
 
+// Compound indexes for scalable search & filtering in MongoDB Atlas
+CampaignSchema.index({ availability: 1, source: 1 });
+CampaignSchema.index({ createdAt: -1 });
+
 export const Campaign: Model<ICampaign> =
   mongoose.models.Campaign || mongoose.model<ICampaign>('Campaign', CampaignSchema);

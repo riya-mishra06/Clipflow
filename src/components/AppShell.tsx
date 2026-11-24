@@ -25,60 +25,23 @@ import {
   LogIn
 } from 'lucide-react';
 
+import { useAuth } from '@/context/AuthContext';
+
 interface AppShellProps {
   children: React.ReactNode;
 }
 
-interface UserProfile {
-  userId: string;
-  email: string;
-  displayName: string;
-}
-
 export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+  const { user, logout: handleLogout } = useAuth();
 
-  // Fetch currently authenticated user from session cookie
-  useEffect(() => {
-    async function loadUser() {
-      try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch {
-        setUser(null);
-      } finally {
-        setLoadingUser(false);
-      }
-    }
-
-    loadUser();
-  }, [pathname]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      setUser(null);
-      router.push('/login');
-      router.refresh();
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-  };
-
-  // Auth pages should not have the studio sidebar/top bar
+  // Auth & Welcome onboarding pages should not have the studio sidebar/top bar
   const isAuthPage =
     pathname === '/login' ||
     pathname === '/register' ||
-    pathname === '/forgot-password';
+    pathname === '/forgot-password' ||
+    pathname === '/welcome';
 
   if (isAuthPage) {
     return <>{children}</>;

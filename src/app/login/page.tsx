@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Film, Lock, Mail, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -32,11 +34,13 @@ export default function LoginPage() {
         throw new Error(data.error || 'Authentication failed. Please check your credentials.');
       }
 
-      router.push('/');
-      router.refresh();
+      // 1. Immediately refresh and populate AuthContext state
+      await refreshUser();
+
+      // 2. Hard redirect to /welcome so all sidebar states are fresh
+      window.location.href = '/welcome';
     } catch (err: any) {
       setError(err.message || 'Invalid workstation credentials.');
-    } finally {
       setLoading(false);
     }
   };
