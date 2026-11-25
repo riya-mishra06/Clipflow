@@ -499,7 +499,7 @@ sequenceDiagram
 | Yield Projection Calculator | ✅ Interactive sliders | — Client-side only | — | — | ⚠️ Visual only | ✅ Completed |
 | Campaign Search + Category Filter | ✅ Debounced | ✅ Regex query | ✅ Indexed | ✅ Query params | ✅ | ✅ Completed |
 | Saved/Bookmarked Campaigns | ✅ Live list + toggle | ✅ User savedCampaignIds | ✅ | ✅ GET/POST /api/campaigns/saved | ✅ Live API tested | ✅ Completed |
-| Ingest Sources Page | ✅ UI only | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Ingest Sources Page | ✅ Live Sources + JSON Sync | ✅ Adapter + Upsert | ✅ IngestSource model | ✅ /api/campaigns/sources & /sync | ✅ Live Upsert tested | ✅ Completed |
 
 ### Projects Module
 

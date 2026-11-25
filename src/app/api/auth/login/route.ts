@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
 import { signSessionToken } from '@/lib/auth';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
 
 const LoginSchema = z.object({
   email: z
@@ -18,6 +19,15 @@ const LoginSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rate = checkRateLimit(`login:${ip}`, 15, 60 * 1000);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: `Too many login attempts. Please retry in ${rate.retryAfterSec}s.` },
+        { status: 429, headers: { 'Retry-After': String(rate.retryAfterSec) } }
+      );
+    }
+
     await connectDB();
     const body = await req.json();
 

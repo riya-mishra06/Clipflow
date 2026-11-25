@@ -18,6 +18,12 @@ export interface ISocialAccount extends Document {
     defaultHashtags?: string[];
     scheduleDelayMinutes?: number;
   };
+  stats?: {
+    subscribers?: string;
+    totalViews?: string;
+    videoCount?: string;
+    lastSyncedAt?: Date;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,9 +44,19 @@ const SocialAccountSchema = new Schema<ISocialAccount>(
       defaultHashtags: [{ type: String }],
       scheduleDelayMinutes: { type: Number, default: 0 },
     },
+    stats: {
+      subscribers: { type: String, default: '' },
+      totalViews: { type: String, default: '' },
+      videoCount: { type: String, default: '' },
+      lastSyncedAt: { type: Date },
+    },
   },
   { timestamps: true }
 );
+
+if (mongoose.models.SocialAccount && !mongoose.models.SocialAccount.schema.path('stats')) {
+  mongoose.deleteModel('SocialAccount');
+}
 
 export const SocialAccount: Model<ISocialAccount> =
   mongoose.models.SocialAccount || mongoose.model<ISocialAccount>('SocialAccount', SocialAccountSchema);

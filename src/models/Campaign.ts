@@ -20,6 +20,7 @@ export interface ICampaign extends Document {
   deadlineDays?: number;
   deadlineDate?: string;
   spotsRemaining?: number;
+  externalId?: string;
   ownerId?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -52,15 +53,21 @@ const CampaignSchema = new Schema<ICampaign>(
     deadlineDays: { type: Number, default: 7 },
     deadlineDate: { type: String },
     spotsRemaining: { type: Number, default: 10 },
+    externalId: { type: String, trim: true },
     ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 );
 
-// Compound indexes for scalable search & filtering in MongoDB Atlas
+// Compound indexes for scalable search, filtering & duplicate-free upsert in MongoDB Atlas
 CampaignSchema.index({ availability: 1, category: 1 });
 CampaignSchema.index({ createdAt: -1 });
 CampaignSchema.index({ brand: 1 });
+CampaignSchema.index({ source: 1, externalId: 1 }, { sparse: true });
+
+if (mongoose.models.Campaign && !mongoose.models.Campaign.schema.path('externalId')) {
+  mongoose.deleteModel('Campaign');
+}
 
 export const Campaign: Model<ICampaign> =
   mongoose.models.Campaign || mongoose.model<ICampaign>('Campaign', CampaignSchema);

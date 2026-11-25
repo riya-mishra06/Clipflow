@@ -11,7 +11,8 @@ import {
   X,
   AlertCircle,
   CheckCircle2,
-  Radio
+  Radio,
+  RefreshCw
 } from 'lucide-react';
 
 interface ChannelAccount {
@@ -24,16 +25,24 @@ interface ChannelAccount {
   settings?: {
     autoPublishEnabled: boolean;
   };
+  stats?: {
+    subscribers?: string;
+    totalViews?: string;
+    videoCount?: string;
+    lastSyncedAt?: string;
+  };
   createdAt: string;
 }
 
 export default function SocialChannelsPage() {
   const [channels, setChannels] = useState<ChannelAccount[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [syncBanner, setSyncBanner] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Connect Modal
   const [showModal, setShowModal] = useState(false);
-  const [platform, setPlatform] = useState<'instagram' | 'youtube' | 'tiktok'>('instagram');
+  const [platform, setPlatform] = useState<'instagram' | 'youtube' | 'tiktok'>('youtube');
   const [category, setCategory] = useState<'clipping' | 'ugc' | 'brand' | 'personal'>('clipping');
   const [accountName, setAccountName] = useState('');
   const [channelOrPageId, setChannelOrPageId] = useState('');
@@ -95,6 +104,37 @@ export default function SocialChannelsPage() {
       setFormError(err.message || 'Connection failed');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleSyncStats = async (ch: ChannelAccount) => {
+    setSyncingId(ch._id);
+    setSyncBanner(null);
+    try {
+      const res = await fetch('/api/channels/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channelId: ch._id }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || 'Sync failed');
+      }
+
+      setChannels((prev) =>
+        prev.map((item) => (item._id === ch._id ? json.data : item))
+      );
+      setSyncBanner({
+        type: 'success',
+        text: `Synced live stats for ${ch.accountName} from YouTube Data API!`,
+      });
+    } catch (err: any) {
+      setSyncBanner({
+        type: 'error',
+        text: err.message || 'Failed to sync stats',
+      });
+    } finally {
+      setSyncingId(null);
     }
   };
 
@@ -165,7 +205,7 @@ export default function SocialChannelsPage() {
               Connected Creator Channels
             </h1>
             <p className="text-xs text-[#a1a1aa] mt-1">
-              Link Instagram, YouTube, and TikTok channels to organize publishing targets and CPM campaigns.
+              Link YouTube, Instagram, and TikTok channels and sync live YouTube Data API v3 channel metrics.
             </p>
           </div>
 
@@ -181,6 +221,23 @@ export default function SocialChannelsPage() {
           </button>
         </div>
 
+        {syncBanner && (
+          <div
+            className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 ${
+              syncBanner.type === 'success'
+                ? 'bg-[#10b981]/10 border-[#10b981]/25 text-[#10b981]'
+                : 'bg-red-500/10 border-red-500/25 text-red-400'
+            }`}
+          >
+            {syncBanner.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 shrink-0" />
+            )}
+            <span>{syncBanner.text}</span>
+          </div>
+        )}
+
         {loading ? (
           <div className="py-24 text-center rounded-xl bg-[#121215] border border-white/[0.08] flex flex-col items-center justify-center space-y-3">
             <Loader2 className="w-7 h-7 text-[#6366f1] animate-spin" />
@@ -191,7 +248,7 @@ export default function SocialChannelsPage() {
             <Share2 className="w-10 h-10 text-[#71717a] mx-auto opacity-30 stroke-[1.5]" />
             <div className="text-sm font-semibold text-white">No social accounts connected</div>
             <p className="text-xs text-[#71717a] max-w-sm mx-auto leading-relaxed">
-              Connect your Instagram, YouTube, or TikTok channel to manage publishing targets and track CPM campaigns.
+              Connect your YouTube (@handle or UC... ID), Instagram, or TikTok channel to sync views and manage publishing targets.
             </p>
             <div className="pt-3 flex items-center justify-center gap-3">
               <button
@@ -236,13 +293,41 @@ export default function SocialChannelsPage() {
                       ID: {ch.channelOrPageId}
                     </div>
                   )}
+
+                  {ch.stats?.subscribers && (
+                    <div className="grid grid-cols-3 gap-2 p-2.5 rounded-lg bg-[#09090b] border border-white/[0.06] text-center">
+                      <div>
+                        <div className="text-[9px] text-[#71717a] uppercase font-mono">Subs</div>
+                        <div className="text-xs font-bold text-white font-mono">{ch.stats.subscribers}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] text-[#71717a] uppercase font-mono">Views</div>
+                        <div className="text-xs font-bold text-[#10b981] font-mono">{ch.stats.totalViews}</div>
+                      </div>
+                      <div>
+                        <div className="text-[9px] text-[#71717a] uppercase font-mono">Videos</div>
+                        <div className="text-xs font-bold text-white font-mono">{ch.stats.videoCount}</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-1 text-[11px] text-[#10b981] font-mono">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span className="capitalize">{ch.status}</span>
-                  </span>
+                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between gap-2 text-xs">
+                  {ch.platform === 'youtube' ? (
+                    <button
+                      onClick={() => handleSyncStats(ch)}
+                      disabled={syncingId === ch._id}
+                      className="px-2.5 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-white text-[11px] font-semibold border border-white/[0.08] flex items-center gap-1.5 transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${syncingId === ch._id ? 'animate-spin' : ''}`} />
+                      <span>{syncingId === ch._id ? 'Syncing...' : 'Sync Stats'}</span>
+                    </button>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-[11px] text-[#10b981] font-mono">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span className="capitalize">{ch.status}</span>
+                    </span>
+                  )}
 
                   <button
                     onClick={() => toggleAutoPublish(ch)}
@@ -286,7 +371,7 @@ export default function SocialChannelsPage() {
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-white">Platform</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {(['instagram', 'youtube', 'tiktok'] as const).map((p) => (
+                  {(['youtube', 'instagram', 'tiktok'] as const).map((p) => (
                     <button
                       type="button"
                       key={p}
@@ -310,7 +395,7 @@ export default function SocialChannelsPage() {
                   required
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  placeholder="e.g. @clipflow.edits or ClipFlow Shorts"
+                  placeholder="e.g. @mkbhd or @clipflow.edits"
                   className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white placeholder-[#71717a] focus:outline-none focus:border-[#6366f1]"
                 />
               </div>
@@ -331,12 +416,12 @@ export default function SocialChannelsPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-white">Channel URL / ID</label>
+                  <label className="text-xs font-semibold text-white">Channel ID (Optional)</label>
                   <input
                     type="text"
                     value={channelOrPageId}
                     onChange={(e) => setChannelOrPageId(e.target.value)}
-                    placeholder="UC_xyz123 (Optional)"
+                    placeholder="UC_xyz123"
                     className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white placeholder-[#71717a] focus:outline-none focus:border-[#6366f1]"
                   />
                 </div>
