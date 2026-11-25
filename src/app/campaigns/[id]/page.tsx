@@ -63,12 +63,21 @@ export default function CampaignDetailPage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/campaigns/${campaignId}`);
+        const [res, savedRes] = await Promise.all([
+          fetch(`/api/campaigns/${campaignId}`, { cache: 'no-store' }),
+          fetch('/api/campaigns/saved', { cache: 'no-store' }),
+        ]);
+
         if (!res.ok) {
           throw new Error('Campaign not found or removed.');
         }
         const json = await res.json();
         setCampaign(json.data);
+
+        if (savedRes.ok) {
+          const savedJson = await savedRes.json();
+          setIsSaved((savedJson.savedIds || []).includes(campaignId));
+        }
       } catch (err: any) {
         setError(err.message || 'Failed to load campaign');
       } finally {
@@ -77,6 +86,22 @@ export default function CampaignDetailPage() {
     }
     fetchDetail();
   }, [campaignId]);
+
+  const handleToggleSave = async () => {
+    try {
+      const res = await fetch('/api/campaigns/saved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campaignId }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setIsSaved(Boolean(json.saved));
+      }
+    } catch (err) {
+      console.error('Failed to toggle bookmark:', err);
+    }
+  };
 
   const baseRate = campaign?.baseRate || 0;
   const ratePer1k = campaign?.ratePer1kViews || 0;
@@ -153,7 +178,7 @@ export default function CampaignDetailPage() {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setIsSaved(!isSaved)}
+            onClick={handleToggleSave}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
               isSaved
                 ? 'bg-[#10b981]/10 border-[#10b981]/30 text-[#10b981]'

@@ -14,6 +14,34 @@ const UpdateSubmissionSchema = z.object({
   notes: z.string().max(1000).optional(),
 });
 
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await connectDB();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+    }
+
+    const submission = await Submission.findOne({ _id: id, ownerId: user.userId });
+    if (!submission) {
+      return NextResponse.json({ error: 'Submission not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ data: submission });
+  } catch (err: any) {
+    console.error('Fetch submission detail error:', err);
+    return NextResponse.json({ error: 'Failed to retrieve submission' }, { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

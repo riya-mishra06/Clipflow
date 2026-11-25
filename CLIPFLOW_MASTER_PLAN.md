@@ -486,7 +486,7 @@ sequenceDiagram
 | Session Check (JWT cookie) | ✅ AuthContext | ✅ JWT verify | — | ✅ GET /api/auth/me | ✅ E2E tested | ✅ Completed |
 | Logout + Cookie Expiry | ✅ Sidebar button | ✅ | — | ✅ POST /api/auth/logout | ✅ E2E tested | ✅ Completed |
 | Welcome Onboarding Screen | ✅ | ✅ Fetches user name | — | Uses /api/auth/me | ✅ | ✅ Completed |
-| Forgot Password | ✅ UI only | ❌ No backend | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Forgot Password | ✅ 2-Step Code + Reset | ✅ 6-digit OTP + 15m TTL | ✅ User model | ✅ POST /api/auth/forgot & reset | ✅ Live API tested | ✅ Completed |
 | AuthModal (legacy component) | ✅ | ✅ | — | — | ❌ Not used in current flow | ⚠️ Unused/Legacy |
 
 ### Campaigns Module
@@ -498,7 +498,7 @@ sequenceDiagram
 | Campaign Detail Page | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/campaigns/[id] | ✅ E2E tested | ✅ Completed |
 | Yield Projection Calculator | ✅ Interactive sliders | — Client-side only | — | — | ⚠️ Visual only | ✅ Completed |
 | Campaign Search + Category Filter | ✅ Debounced | ✅ Regex query | ✅ Indexed | ✅ Query params | ✅ | ✅ Completed |
-| Saved/Bookmarked Campaigns | ✅ UI only | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Saved/Bookmarked Campaigns | ✅ Live list + toggle | ✅ User savedCampaignIds | ✅ | ✅ GET/POST /api/campaigns/saved | ✅ Live API tested | ✅ Completed |
 | Ingest Sources Page | ✅ UI only | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 
 ### Projects Module
@@ -508,9 +508,9 @@ sequenceDiagram
 | Projects Hub (listing) | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects | ✅ E2E tested | ✅ Completed |
 | Project Creation Wizard (3-step) | ✅ Live POST | ✅ Zod validated | ✅ | ✅ POST /api/projects | ✅ E2E tested | ✅ Completed |
 | Project Detail Page | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects/[id] | ✅ Live API + 404 tested | ✅ Completed |
-| Project → AI Script Plan | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
-| Project → Task Board | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
-| Project → Draft Review | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Project → AI Script Plan | ✅ Live Hook & Script Editor | ✅ Zod + Ownership | ✅ Project model | ✅ PATCH /api/projects/[id] | ✅ Live API tested | ✅ Completed |
+| Project → Task Board | ✅ Live Checklist + Auto-save | ✅ Zod + Ownership | ✅ Project model | ✅ PATCH /api/projects/[id] | ✅ Live API tested | ✅ Completed |
+| Project → Draft Review | ✅ Live Drafts + Add/Delete | ✅ Zod + Ownership | ✅ Project model | ✅ PATCH /api/projects/[id] | ✅ Live API tested | ✅ Completed |
 
 ### Assets & Media
 
@@ -518,7 +518,7 @@ sequenceDiagram
 |---|---|---|---|---|---|---|
 | Asset Library (listing + CRUD + 7d Trash) | ✅ Live fetch + Edit + Soft Delete + Restore | ✅ | ✅ Indexed + TTL | ✅ GET/PATCH/DELETE /api/assets | ✅ Live E2E tested | ✅ Completed |
 | Asset Upload Form | ✅ Live POST + File/Link | ✅ Zod validated | ✅ Asset model | ✅ POST /api/assets | ✅ Live E2E tested | ✅ Completed |
-| Asset Detail / Preview | ✅ UI only | ❌ | 📋 | ❌ | ❌ | 🔧 Frontend Only |
+| Asset Detail / Preview | ✅ Live Inspector + 404 | ✅ Ownership check | ✅ Asset model | ✅ GET /api/assets/[id] | ✅ Live API tested | ✅ Completed |
 
 ### Academy & Intelligence
 
@@ -535,10 +535,10 @@ sequenceDiagram
 | Feature | Frontend | Backend | Database | API | Testing | Status |
 |---|---|---|---|---|---|---|
 | Submissions Tracker | ✅ Live list + New Modal + Status + Withdraw | ✅ Zod + Ownership | ✅ Submission model + Indexes | ✅ GET/POST/PATCH/DELETE /api/submissions | ✅ Live E2E tested | ✅ Completed |
-| Social Channels | ✅ Empty state UI | ❌ | 📋 Schema exists | ❌ | ❌ | 🔧 Frontend Only |
-| Earnings Dashboard | ✅ Static \$0.00 UI | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
-| Calendar / Schedule | ✅ Empty state UI | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
-| Settings | ✅ Static layout | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Social Channels | ✅ Live grid + Connect + Toggle | ✅ Token-safe | ✅ SocialAccount model | ✅ GET/POST/PATCH/DELETE /api/channels | ✅ Live API tested | ✅ Completed |
+| Earnings Dashboard | ✅ Live balance + ledger | ✅ Derived from Submissions | ✅ | ✅ GET /api/earnings | ✅ Live API tested | ✅ Completed |
+| Calendar / Schedule | ✅ Live timeline + filters | ✅ Parallel merge & sort | ✅ | ✅ GET /api/calendar | ✅ Live API tested | ✅ Completed |
+| Settings | ✅ Profile + Payout + Password | ✅ Bcrypt + JWT refresh | ✅ User model | ✅ GET/PATCH /api/settings | ✅ Live API tested | ✅ Completed |
 
 ### AI & Automation (Future)
 

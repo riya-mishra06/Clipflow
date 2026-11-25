@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -8,169 +8,202 @@ import {
   Sparkles,
   Copy,
   Check,
-  RefreshCw,
+  Save,
   FileText,
-  Clock,
+  Loader2,
   CheckCircle2,
-  Sliders,
-  Layers,
-  ChevronRight
+  AlertCircle
 } from 'lucide-react';
 
 export default function ProjectPlanPage() {
   const params = useParams();
-  const projectId = (params?.id as string) || 'proj-01';
+  const projectId = params?.id as string;
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [projectTitle, setProjectTitle] = useState('Project Plan');
+  const [hookIdea, setHookIdea] = useState('');
+  const [scriptNotes, setScriptNotes] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const [hookIdea, setHookIdea] = useState(
-    'Demonstrating instant AI face morphs with high retention sound design.'
-  );
+  useEffect(() => {
+    async function loadPlan() {
+      if (!projectId) return;
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/projects/${projectId}`, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          const p = json.data;
+          if (p) {
+            setProjectTitle(p.title || 'Project Plan');
+            setHookIdea(p.conceptHook || '');
+            setScriptNotes(
+              p.scriptNotes ||
+                '0:00 - 0:03 | Pattern Interrupt Hook:\n[Visual]: Fast zoom + glitch SFX\n[Voiceover]: ...\n\n0:03 - 0:15 | Pain Point vs Solution:\n...\n\n0:15 - 0:45 | Walkthrough & CTA:\n...'
+            );
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load project plan:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPlan();
+  }, [projectId]);
 
-  const [scriptSections, setScriptSections] = useState([
-    {
-      sec: '0:00 - 0:03',
-      label: 'The Pattern Interrupt Hook',
-      dialogue: '"If you are still cutting vertical videos manually in 2026, stop."',
-      visualCue: 'High-speed speed ramp zoom directly into timeline monitor with glitch SFX.',
-    },
-    {
-      sec: '0:03 - 0:15',
-      label: 'The Pain Point vs AI Solution',
-      dialogue: '"Watch how NeonPulse tracks and grades 60fps face movements instantly without manual keyframing."',
-      visualCue: 'Side-by-side comparison bar sliding across screen showing raw footage vs synthesized.',
-    },
-    {
-      sec: '0:15 - 0:38',
-      label: 'Core Feature Walkthrough',
-      dialogue: '"Just drop your ProRes stem, click Glitch Sync, and let the neural engine lock onto the audio beats."',
-      visualCue: 'Cursor clicks waveform, instantaneous neon glow ripples across typography.',
-    },
-    {
-      sec: '0:38 - 0:45',
-      label: 'Call To Action & Escrow Bounty Link',
-      dialogue: '"Grab the project stems link in bio and start cutting today."',
-      visualCue: 'Official NeonPulse CTA badge animates in lower third within platform safe zone.',
-    },
-  ]);
+  const handleSavePlan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFeedback(null);
+    setSaving(true);
 
-  const handleCopy = (text: string, idx: number) => {
-    navigator.clipboard.writeText(text);
-    setCopiedIndex(idx);
-    setTimeout(() => setCopiedIndex(null), 2000);
+    try {
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conceptHook: hookIdea,
+          scriptNotes,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json.error || 'Failed to save plan');
+      }
+      setFeedback({ type: 'success', text: 'Script & hook plan saved to MongoDB Atlas!' });
+    } catch (err: any) {
+      setFeedback({ type: 'error', text: err.message || 'Save failed' });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleRegenerateHook = () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      setIsGenerating(false);
-      setHookIdea('3 hidden AI video features that top creators never talk about.');
-    }, 1200);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`HOOK:\n${hookIdea}\n\nSCRIPT:\n${scriptNotes}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] space-y-3">
+        <Loader2 className="w-7 h-7 text-[#6366f1] animate-spin" />
+        <span className="text-xs text-[#71717a] font-mono">Loading Script Plan...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-[white/[0.08]]/50 px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-white/[0.08] px-6 py-3.5 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4 min-w-0">
           <Link
             href={`/projects/${projectId}`}
-            className="p-1.5 rounded-lg bg-[#121215] hover:bg-[white/[0.04]] border border-[white/[0.08]] text-[#9496a1] hover:text-white transition-colors"
+            className="p-1.5 rounded-lg bg-[#121215] hover:bg-white/[0.04] border border-white/[0.08] text-[#71717a] hover:text-white transition-colors shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#cebdff]">Script & Hook Architect</span>
-            </div>
-            <h1 className="text-base font-bold text-white tracking-tight">Content Plan & AI Prompts</h1>
+          <div className="min-w-0">
+            <span className="text-xs font-semibold text-[#818cf8]">Script & Hook Architect</span>
+            <h1 className="text-base font-bold text-white tracking-tight truncate">{projectTitle}</h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link
-            href={`/projects/${projectId}/tasks`}
-            className="px-3.5 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-white text-xs font-semibold border border-[white/[0.08]] transition-colors"
-          >
-            Go to Tasks →
-          </Link>
-        </div>
+        <Link
+          href={`/projects/${projectId}/tasks`}
+          className="px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white text-xs font-semibold border border-white/[0.08] transition-colors shrink-0"
+        >
+          Go to Tasks →
+        </Link>
       </header>
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-6 py-8 space-y-6">
-        {/* Hook Generator Prompt Box */}
-        <div className="p-6 rounded-2xl bg-gradient-to-br from-[#161821] to-[#121215] border border-[white/[0.08]] space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#cebdff]" />
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider font-headline">
-                AI Hook Generator
-              </h2>
-            </div>
+      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-white font-headline">Content Plan & Script</h2>
+            <p className="text-xs text-[#a1a1aa] mt-1">
+              Refine your 0–3s retention hook and beat-by-beat script cues. Saved directly to your project document.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-xs font-semibold text-[#a1a1aa] hover:text-white border border-white/[0.08] transition-colors self-start sm:self-auto"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-[#10b981]" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copied ? 'Copied!' : 'Copy Full Script'}</span>
+          </button>
+        </div>
 
+        {feedback && (
+          <div
+            className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 ${
+              feedback.type === 'success'
+                ? 'bg-[#10b981]/10 border-[#10b981]/25 text-[#10b981]'
+                : 'bg-red-500/10 border-red-500/25 text-red-400'
+            }`}
+          >
+            {feedback.type === 'success' ? (
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+            ) : (
+              <AlertCircle className="w-4 h-4 shrink-0" />
+            )}
+            <span>{feedback.text}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSavePlan} className="space-y-5">
+          <div className="p-6 rounded-2xl bg-[#121215] border border-white/[0.08] space-y-3">
+            <label className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-[#818cf8]" />
+              <span>0–3 Second Retention Hook</span>
+            </label>
+            <textarea
+              rows={2}
+              value={hookIdea}
+              onChange={(e) => setHookIdea(e.target.value)}
+              placeholder="Write your scroll-stopping opening hook..."
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#71717a] focus:outline-none focus:border-[#6366f1]"
+            />
+          </div>
+
+          <div className="p-6 rounded-2xl bg-[#121215] border border-white/[0.08] space-y-3">
+            <label className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+              <FileText className="w-3.5 h-3.5 text-[#10b981]" />
+              <span>Beat-Sheet & Dialogue Script</span>
+            </label>
+            <textarea
+              rows={10}
+              value={scriptNotes}
+              onChange={(e) => setScriptNotes(e.target.value)}
+              placeholder="Write your timestamped dialogue and visual cues..."
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-xs text-white font-mono leading-relaxed placeholder-[#71717a] focus:outline-none focus:border-[#6366f1]"
+            />
+          </div>
+
+          <div className="flex justify-end">
             <button
-              onClick={handleRegenerateHook}
-              disabled={isGenerating}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[white/[0.04]] hover:bg-[white/[0.08]] text-[#cebdff] text-xs font-semibold border border-[white/[0.08]] transition-colors"
+              type="submit"
+              disabled={saving}
+              className="px-6 py-2.5 rounded-xl bg-[#6366f1] hover:bg-[#4f46e5] text-white text-xs font-bold transition-colors shadow-lg shadow-[#6366f1]/20 flex items-center gap-2 disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin' : ''}`} />
-              <span>{isGenerating ? 'Re-synthesizing...' : 'New Hook Angle'}</span>
+              {saving ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save Content Plan</span>
+                </>
+              )}
             </button>
           </div>
-
-          <div className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]]">
-            <span className="text-[10px] text-[#9496a1] uppercase font-bold">Selected Retention Premise:</span>
-            <div className="text-base font-bold text-white mt-1">"{hookIdea}"</div>
-          </div>
-        </div>
-
-        {/* Script & Visual Cue Breakdown */}
-        <div className="rounded-2xl bg-[#121215] border border-[white/[0.08]] p-6 space-y-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base font-bold text-white font-headline">Scene-by-Scene Pacing Blueprint</h3>
-              <p className="text-xs text-[#9496a1] mt-0.5">
-                Target duration: 45 seconds • Pacing: High Retention
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {scriptSections.map((sec, idx) => (
-              <div
-                key={idx}
-                className="p-4 rounded-xl bg-[#09090b] border border-[white/[0.08]] space-y-2 hover:border-[#cebdff]/40 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded bg-[white/[0.04]] text-[#cebdff] font-mono text-[11px] font-bold">
-                      {sec.sec}
-                    </span>
-                    <span className="text-xs font-bold text-white">{sec.label}</span>
-                  </div>
-
-                  <button
-                    onClick={() => handleCopy(`${sec.dialogue}\nVisual: ${sec.visualCue}`, idx)}
-                    className="p-1.5 rounded-lg bg-[#161821] hover:bg-[white/[0.04]] text-[#9496a1] hover:text-white transition-colors"
-                    title="Copy scene"
-                  >
-                    {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-[#4edea3]" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
-
-                <div className="text-xs text-[#cebdff] italic pl-2 border-l-2 border-[#cebdff]/40">
-                  {sec.dialogue}
-                </div>
-
-                <div className="text-[11px] text-[#9496a1] pl-2">
-                  <span className="font-semibold text-white">Visual & Audio Cue: </span>
-                  {sec.visualCue}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        </form>
       </main>
     </div>
   );

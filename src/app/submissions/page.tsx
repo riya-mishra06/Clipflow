@@ -328,7 +328,11 @@ function SubmissionsContent() {
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white truncate">{sub.projectTitle}</h3>
+                  <h3 className="text-sm font-bold text-white truncate">
+                    <Link href={`/submissions/${sub._id}`} className="hover:text-[#818cf8] transition-colors">
+                      {sub.projectTitle}
+                    </Link>
+                  </h3>
                   <div className="text-xs text-[#71717a]">
                     Campaign: <span className="text-[#a1a1aa]">{sub.campaignTitle}</span>
                   </div>

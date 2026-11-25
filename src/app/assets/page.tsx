@@ -358,9 +358,13 @@ export default function AssetLibraryPage() {
                         {getCategoryIcon(asset.category)}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-xs font-bold text-white truncate" title={asset.name}>
+                        <Link
+                          href={`/assets/${asset._id}`}
+                          className="text-xs font-bold text-white hover:text-[#818cf8] transition-colors truncate block"
+                          title={asset.name}
+                        >
                           {asset.name}
-                        </h3>
+                        </Link>
                         <div className="text-[11px] text-[#71717a] font-mono flex items-center gap-1.5 mt-0.5">
                           <span className="uppercase">{asset.category}</span>
                           <span>•</span>

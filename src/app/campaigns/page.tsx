@@ -46,6 +46,21 @@ export default function CampaignExplorerPage() {
   const debouncedSearch = useDebounce(search, 250);
 
   useEffect(() => {
+    async function loadSavedIds() {
+      try {
+        const res = await fetch('/api/campaigns/saved', { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          setSavedIds(new Set(json.savedIds || []));
+        }
+      } catch {
+        // Non-blocking
+      }
+    }
+    loadSavedIds();
+  }, []);
+
+  useEffect(() => {
     async function loadCampaigns() {
       setLoading(true);
       try {
@@ -53,7 +68,7 @@ export default function CampaignExplorerPage() {
         if (category !== 'All') queryParams.set('category', category);
         if (debouncedSearch.trim()) queryParams.set('search', debouncedSearch.trim());
 
-        const res = await fetch(`/api/campaigns?${queryParams.toString()}`);
+        const res = await fetch(`/api/campaigns?${queryParams.toString()}`, { cache: 'no-store' });
         if (res.ok) {
           const json = await res.json();
           setCampaigns(json.data || []);
@@ -68,14 +83,21 @@ export default function CampaignExplorerPage() {
     loadCampaigns();
   }, [category, debouncedSearch]);
 
-  const toggleBookmark = (id: string, e: React.MouseEvent) => {
+  const toggleBookmark = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
-    setSavedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    try {
+      const res = await fetch('/api/campaigns/saved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campaignId: id }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setSavedIds(new Set(json.savedIds || []));
+      }
+    } catch (err) {
+      console.error('Bookmark toggle failed:', err);
+    }
   };
 
   return (
@@ -92,10 +114,19 @@ export default function CampaignExplorerPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
-            <span className="w-2 h-2 rounded-full bg-[#10b981]" />
-            <span className="text-[#a1a1aa]">Active Ingestion:</span>
-            <span className="font-bold text-white font-mono">Live MongoDB Atlas</span>
+          <div className="flex items-center gap-3 text-xs">
+            <Link
+              href="/campaigns/saved"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#121215] hover:bg-white/[0.06] border border-white/[0.08] text-white font-semibold transition-colors"
+            >
+              <BookmarkCheck className="w-3.5 h-3.5 text-[#10b981]" />
+              <span>Saved ({savedIds.size})</span>
+            </Link>
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#10b981]" />
+              <span className="text-[#a1a1aa]">Active Ingestion:</span>
+              <span className="font-bold text-white font-mono">Live MongoDB Atlas</span>
+            </div>
           </div>
         </div>
 
