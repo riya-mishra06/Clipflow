@@ -715,40 +715,22 @@ Learn these in order. Each builds on the previous one.
 
 ---
 
-## H. Tomorrow's Action Plan
+## H. Session Update & Tomorrow's Action Plan (Updated: November 25, 2026)
 
-### Where we stopped today
+### Where we stopped today (Nov 25, 2026)
 
 We completed:
-- ✅ Full authentication (register, login, logout, session management)
-- ✅ Campaigns module (create, list, detail, search, filter)
-- ✅ Projects module (create, list)
-- ✅ Code review and three architectural improvements
-- ✅ E2E testing via HTTP (7/7 tests passed)
+- ✅ **Full-Stack Modules & QA**: Channels (`SocialAccount`), AI Hooks Assistant (`/api/ai/hooks`, `/ai-assistant`), Campaigns & Sources, Auth Rate Limiting (`src/lib/rateLimit.ts`), and Next.js 16 `src/proxy.ts` migration — `npm run build` passed across 33/33 routes.
+- ✅ **Environment Keys Added**: `YOUTUBE_API_KEY`, `GEMINI_API_KEY`, and `WHOP_API_KEY` saved in `.env.local` (never committed).
+- ✅ **YouTube Data API v3 Live Verified**: `POST /api/channels/sync` tested live on `@GoogleDevelopers` (`200 OK`, `success: true`, live subscribers/views/videoCount fetched and saved).
+- ✅ **AI Hooks Endpoint Verified**: `POST /api/ai/hooks` returned `200 OK` (`3` hooks) in `fallback` mode (live `gemini` mode awaits a standard `AIza...` AI Studio key from `aistudio.google.com/apikey`).
+- ✅ **Instagram Strategy Aligned**: Decided to keep Instagram in Phase 2 (manual handles + link tracking work now; Meta Graph API OAuth `INSTAGRAM_APP_ID` / `INSTAGRAM_APP_SECRET` will be added once Business/Creator accounts are finalized).
 
 ### What we should do tomorrow
 
-**Single recommended path: Task 1.1 — Wire Project Detail Page to MongoDB**
-
-**Why this is the correct next step**:
-1. It's the smallest, simplest remaining task
-2. The API already exists (`GET /api/projects/[id]`)
-3. It follows the exact same pattern we used for campaigns (you'll be repeating a pattern you've now seen twice)
-4. It completes the projects flow end-to-end (create → list → view detail)
-
-**But before writing any code**, we will:
-1. Review the concepts from Section F together (specifically: HTTP lifecycle, REST APIs, `useEffect` + `fetch` pattern)
-2. I'll explain what we're about to change and why
-3. You'll approve the plan
-4. We implement together
-5. I'll ask you conceptual questions to verify understanding
-6. We test in the browser
-
-**What you should be able to explain independently after completing it**:
-- What happens when a user clicks "Open Workspace" on a project card
-- How the browser knows which project to fetch (dynamic `[id]` routing)
-- Why we check `mongoose.Types.ObjectId.isValid(id)` before querying
-- How the loading → error → data state machine works in React
+1. **Wire & Verify `WHOP_API_KEY`**: Connect `WHOP_API_KEY` into `/api/campaigns/sources/sync` and test live Whop campaign fetching.
+2. **Switch Gemini AI to Live Mode** *(when `AIza...` key is ready)*: Replace `GEMINI_API_KEY` in `.env.local` and verify `POST /api/ai/hooks` returns `mode: "gemini"`.
+3. **Add Remaining Keys as Approved**: Cuelinks / Affiliate APIs when partner access is ready, and Meta OAuth (`INSTAGRAM_APP_ID` / `INSTAGRAM_APP_SECRET`) in Phase 2.
 
 ---
 
@@ -773,4 +755,4 @@ I am your **senior software engineer and technical mentor**, not just a code gen
 
 ---
 
-*This document was generated from a thorough audit of the Clipflow codebase on November 24, 2026. No code was modified during its creation.*
+*Last updated on November 25, 2026 with live API verification results and tomorrow's action plan.*
