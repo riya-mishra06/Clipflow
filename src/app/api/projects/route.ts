@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import { Project } from '@/models/Project';
 import { getCurrentUser } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 const CreateProjectSchema = z.object({
   title: z.string().trim().min(3, { message: 'Project title must be at least 3 characters' }).max(120),
@@ -70,8 +73,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
+    const { campaignId, ...rest } = validation.data;
     const projectData = {
-      ...validation.data,
+      ...rest,
+      campaignId: campaignId && mongoose.Types.ObjectId.isValid(campaignId) ? campaignId : undefined,
       ownerId: user.userId,
     };
 

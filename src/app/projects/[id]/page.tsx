@@ -154,7 +154,7 @@ export default function ProjectDetailsPage() {
           </Link>
 
           <Link
-            href="/submissions"
+            href={`/submissions?projectId=${project._id}`}
             className="px-4 py-1.5 rounded-xl bg-[#6366f1] hover:bg-[#4f46e5] text-white text-xs font-bold transition-all shadow-md shadow-[#6366f1]/20"
           >
             Submit to Bounty

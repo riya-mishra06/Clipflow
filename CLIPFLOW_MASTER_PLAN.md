@@ -474,7 +474,7 @@ sequenceDiagram
 | MongoDB Atlas Connection | — | ✅ | ✅ | — | ✅ E2E tested | ✅ Completed |
 | Environment Variables (.env.local) | — | ✅ | — | — | ✅ | ✅ Completed |
 | Main Dashboard (`/`) | ✅ Live metrics + recent lists | ✅ Promise.all | ✅ | ✅ GET /api/dashboard | ✅ Live API + Build tested | ✅ Completed |
-| Edge Middleware (route protection) | — | ✅ | — | — | ⚠️ Not browser-tested | ⚠️ Needs Verification |
+| Proxy (route protection) | — | ✅ | — | — | ✅ Live 307 redirect tested | ✅ Completed |
 | useDebounce Custom Hook | ✅ | — | — | — | ✅ Used in 2 pages | ✅ Completed |
 
 ### Authentication & User Management
@@ -507,7 +507,7 @@ sequenceDiagram
 |---|---|---|---|---|---|---|
 | Projects Hub (listing) | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects | ✅ E2E tested | ✅ Completed |
 | Project Creation Wizard (3-step) | ✅ Live POST | ✅ Zod validated | ✅ | ✅ POST /api/projects | ✅ E2E tested | ✅ Completed |
-| Project Detail Page | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects/[id] | ⚠️ Build passes, needs browser test | ⚠️ Needs Verification |
+| Project Detail Page | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects/[id] | ✅ Live API + 404 tested | ✅ Completed |
 | Project → AI Script Plan | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 | Project → Task Board | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 | Project → Draft Review | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
@@ -534,7 +534,7 @@ sequenceDiagram
 
 | Feature | Frontend | Backend | Database | API | Testing | Status |
 |---|---|---|---|---|---|---|
-| Submissions Tracker | ✅ Empty state UI | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
+| Submissions Tracker | ✅ Live list + New Modal + Status + Withdraw | ✅ Zod + Ownership | ✅ Submission model + Indexes | ✅ GET/POST/PATCH/DELETE /api/submissions | ✅ Live E2E tested | ✅ Completed |
 | Social Channels | ✅ Empty state UI | ❌ | 📋 Schema exists | ❌ | ❌ | 🔧 Frontend Only |
 | Earnings Dashboard | ✅ Static \$0.00 UI | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 | Calendar / Schedule | ✅ Empty state UI | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
