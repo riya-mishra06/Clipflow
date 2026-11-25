@@ -89,7 +89,7 @@ A full production studio platform with AI-powered clip generation, automated soc
 - **What the connection string is**: It's like a URL that tells our app exactly where to find our database, including the username and password. Example format: `mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/clipflow`
 - **What to learn**: What a "document" is, what a "collection" is (like a folder of documents), why NoSQL differs from SQL.
 
-### 6. MongoDB Compass (The Database Viewer)
+### 6. MongoDB Compass (The Database Viewer) 
 
 - **What it is**: A desktop application to visually browse your MongoDB database — see collections, view documents, run queries.
 - **Why we use it**: So you can visually confirm that data was actually saved when our app creates a user or campaign.
@@ -370,7 +370,7 @@ Every time the app loads, `AuthContext` calls this endpoint to check "am I still
 
 **What we did today**:
 1. **Removed duplicate POST handler** from `/api/auth/me` (was duplicating logout logic)
-2. **Added Edge Middleware** (`src/middleware.ts`) — redirects unauthenticated users away from `/projects/new` and `/campaigns/new` at the server level
+2. **Added Proxy (formerly Middleware)** (`src/proxy.ts`) — redirects unauthenticated users away from `/projects/new` and `/campaigns/new` at the server level
 3. **Created reusable `useDebounce` hook** (`src/hooks/useDebounce.ts`) — extracted duplicate setTimeout logic from campaigns and projects pages
 4. **Code Review** — documented in `docs/CODE_REVIEW.md`
 
@@ -473,6 +473,7 @@ sequenceDiagram
 | AppShell Sidebar Navigation | ✅ | — | — | — | ✅ Visual | ✅ Completed |
 | MongoDB Atlas Connection | — | ✅ | ✅ | — | ✅ E2E tested | ✅ Completed |
 | Environment Variables (.env.local) | — | ✅ | — | — | ✅ | ✅ Completed |
+| Main Dashboard (`/`) | ✅ Live metrics + recent lists | ✅ Promise.all | ✅ | ✅ GET /api/dashboard | ✅ Live API + Build tested | ✅ Completed |
 | Edge Middleware (route protection) | — | ✅ | — | — | ⚠️ Not browser-tested | ⚠️ Needs Verification |
 | useDebounce Custom Hook | ✅ | — | — | — | ✅ Used in 2 pages | ✅ Completed |
 
@@ -506,7 +507,7 @@ sequenceDiagram
 |---|---|---|---|---|---|---|
 | Projects Hub (listing) | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects | ✅ E2E tested | ✅ Completed |
 | Project Creation Wizard (3-step) | ✅ Live POST | ✅ Zod validated | ✅ | ✅ POST /api/projects | ✅ E2E tested | ✅ Completed |
-| Project Detail Page | ✅ UI exists | ❌ Uses hardcoded title | ❌ | ❌ Not wired to API | ❌ | 🔧 Frontend Only |
+| Project Detail Page | ✅ Live fetch | ✅ | ✅ | ✅ GET /api/projects/[id] | ⚠️ Build passes, needs browser test | ⚠️ Needs Verification |
 | Project → AI Script Plan | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 | Project → Task Board | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
 | Project → Draft Review | ✅ UI exists | ❌ | ❌ | ❌ | ❌ | 🔧 Frontend Only |
@@ -515,8 +516,8 @@ sequenceDiagram
 
 | Feature | Frontend | Backend | Database | API | Testing | Status |
 |---|---|---|---|---|---|---|
-| Asset Library (listing) | ✅ Empty state UI | ❌ | 📋 Schema exists | ❌ | ❌ | 🔧 Frontend Only |
-| Asset Upload Form | ✅ UI only | ❌ | 📋 | ❌ | ❌ | 🔧 Frontend Only |
+| Asset Library (listing + CRUD + 7d Trash) | ✅ Live fetch + Edit + Soft Delete + Restore | ✅ | ✅ Indexed + TTL | ✅ GET/PATCH/DELETE /api/assets | ✅ Live E2E tested | ✅ Completed |
+| Asset Upload Form | ✅ Live POST + File/Link | ✅ Zod validated | ✅ Asset model | ✅ POST /api/assets | ✅ Live E2E tested | ✅ Completed |
 | Asset Detail / Preview | ✅ UI only | ❌ | 📋 | ❌ | ❌ | 🔧 Frontend Only |
 
 ### Academy & Intelligence

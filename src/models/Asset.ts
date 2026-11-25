@@ -15,7 +15,11 @@ export interface IAsset extends Document {
   externalUrl?: string;
   objectKey?: string;
   status: AssetStatus;
+  tags: string[];
+  projectTitle?: string;
   attachedProjectIds: mongoose.Types.ObjectId[];
+  deletedAt?: Date;
+  expireAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,7 +27,7 @@ export interface IAsset extends Document {
 const AssetSchema = new Schema<IAsset>(
   {
     ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true, trim: true },
     kind: { type: String, enum: ['upload', 'link'], required: true },
     category: {
       type: String,
@@ -31,15 +35,29 @@ const AssetSchema = new Schema<IAsset>(
       default: 'video',
     },
     mimeType: { type: String },
-    sizeBytes: { type: Number },
+    sizeBytes: { type: Number, default: 0, min: 0 },
     durationMs: { type: Number },
-    externalUrl: { type: String },
+    externalUrl: { type: String, trim: true },
     objectKey: { type: String },
     status: { type: String, enum: ['pending', 'ready', 'failed'], default: 'ready' },
+    tags: [{ type: String }],
+    projectTitle: { type: String },
     attachedProjectIds: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
+    deletedAt: { type: Date, default: null },
+    expireAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
+
+AssetSchema.index({ ownerId: 1, category: 1 });
+AssetSchema.index({ createdAt: -1 });
+// MongoDB TTL Index: automatically permanently deletes documents once expireAt time is reached
+AssetSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+
+// Ensure hot-reload picks up new schema fields (like deletedAt / expireAt)
+if (mongoose.models.Asset && !mongoose.models.Asset.schema.path('deletedAt')) {
+  delete mongoose.models.Asset;
+}
 
 export const Asset: Model<IAsset> =
   mongoose.models.Asset || mongoose.model<IAsset>('Asset', AssetSchema);

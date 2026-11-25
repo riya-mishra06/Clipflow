@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [allowInput, setAllowInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,8 +97,10 @@ export default function LoginPage() {
                 <input
                   type="email"
                   required
-                  name="studio_login_email"
-                  autoComplete="username"
+                  name="clipflow_signin_email_field"
+                  autoComplete="off"
+                  readOnly={!allowInput}
+                  onFocus={() => setAllowInput(true)}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="editor@clipflow.studio"
@@ -124,8 +127,10 @@ export default function LoginPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
-                  name="studio_login_password"
-                  autoComplete="current-password"
+                  name="clipflow_signin_password_field"
+                  autoComplete="new-password"
+                  readOnly={!allowInput}
+                  onFocus={() => setAllowInput(true)}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
