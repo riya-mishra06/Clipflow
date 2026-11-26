@@ -41,18 +41,19 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
     await connectDB();
+
     const { id } = await params;
-
-    if (!id) {
-      return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    let project = null;
-    if (mongoose.Types.ObjectId.isValid(id)) {
-      project = await Project.findById(id);
-    }
-
+    const project = await Project.findOne({ _id: id, ownerId: user.userId });
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }

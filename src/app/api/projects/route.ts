@@ -25,16 +25,23 @@ const CreateProjectSchema = z.object({
 
 export async function GET(req: Request) {
   try {
-    await connectDB();
     const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required', data: [] },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
+
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search');
     const status = searchParams.get('status');
 
-    const filter: Record<string, any> = {};
-    if (user) {
-      filter.ownerId = user.userId;
-    }
+    const filter: Record<string, any> = {
+      ownerId: user.userId,
+    };
 
     if (status && status !== 'all') {
       filter.status = status;
