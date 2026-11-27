@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db';
 import { Project } from '@/models/Project';
 import { getCurrentUser } from '@/lib/auth';
+import { escapeRegex } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,9 +49,10 @@ export async function GET(req: Request) {
     }
 
     if (search && search.trim()) {
+      const safeSearch = escapeRegex(search.trim());
       filter.$or = [
-        { title: { $regex: search.trim(), $options: 'i' } },
-        { campaignTitle: { $regex: search.trim(), $options: 'i' } },
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { campaignTitle: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 

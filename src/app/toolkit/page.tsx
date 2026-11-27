@@ -1,20 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
-  Sliders,
-  Film,
   Volume2,
-  Maximize2,
-  Calculator,
-  CheckCircle2,
-  AlertCircle
+  Calculator
 } from 'lucide-react';
 
 export default function EditingToolkitPage() {
   // Tool 1: Aspect Ratio Calculator
-  const [sourceWidth, setSourceWidth] = useState(3840);
+  const [sourceWidth] = useState(3840);
   const [sourceHeight, setSourceHeight] = useState(2160);
   const target916Width = Math.round((sourceHeight * 9) / 16);
 

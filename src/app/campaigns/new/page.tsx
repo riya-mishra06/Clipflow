@@ -7,13 +7,8 @@ import {
   ArrowLeft,
   Link2,
   Sparkles,
-  Upload,
-  CheckCircle2,
   AlertCircle,
-  FileText,
   DollarSign,
-  Calendar,
-  Layers,
   ArrowRight,
   Loader2
 } from 'lucide-react';

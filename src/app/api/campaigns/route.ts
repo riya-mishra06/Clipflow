@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { Campaign } from '@/models/Campaign';
 import { getCurrentUser } from '@/lib/auth';
+import { escapeRegex } from '@/lib/security';
 
 const CreateCampaignSchema = z.object({
   title: z.string().trim().min(3, { message: 'Title must be at least 3 characters' }).max(120),
@@ -37,10 +38,11 @@ export async function GET(req: Request) {
     }
 
     if (search && search.trim()) {
+      const safeSearch = escapeRegex(search.trim());
       filter.$or = [
-        { title: { $regex: search.trim(), $options: 'i' } },
-        { brand: { $regex: search.trim(), $options: 'i' } },
-        { tags: { $in: [new RegExp(search.trim(), 'i')] } },
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { brand: { $regex: safeSearch, $options: 'i' } },
+        { tags: { $in: [new RegExp(safeSearch, 'i')] } },
       ];
     }
 
@@ -57,8 +59,15 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    await connectDB();
     const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Authentication required to create a campaign' },
+        { status: 401 }
+      );
+    }
+
+    await connectDB();
     const body = await req.json();
 
     // 1. Zod schema validation
@@ -71,7 +80,7 @@ export async function POST(req: Request) {
     // 2. Insert into MongoDB Atlas
     const campaignData = {
       ...validation.data,
-      ownerId: user ? user.userId : undefined,
+      ownerId: user.userId,
     };
 
     const campaign = await Campaign.create(campaignData);

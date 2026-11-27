@@ -43,8 +43,9 @@ export default function RegisterPage() {
       // 1. Immediately refresh and populate AuthContext state
       await refreshUser();
 
-      // 2. Hard redirect to /welcome so all sidebar states are fresh
-      window.location.href = '/welcome';
+      // 2. Navigate to /welcome and refresh server components
+      router.push('/welcome');
+      router.refresh();
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
       setLoading(false);

@@ -1,79 +1,123 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
   ArrowLeft,
   Copy,
   Check,
-  TrendingUp,
   RefreshCw,
-  FolderPlus,
   AlertCircle,
-  Zap
+  Zap,
+  History,
+  ShieldCheck,
+  CheckCircle2,
 } from 'lucide-react';
+import UniversalInput from '@/components/UniversalInput';
+import { UniversalInputItem } from '@/lib/inputDetector';
 
-interface ViralHook {
-  id: string;
-  hook: string;
-  score: number;
-  retentionEstimate: string;
-  pacingNote: string;
-  visualCue?: string;
+interface GenerationRecord {
+  _id: string;
+  taskType: string;
+  provider: string;
+  aiModel: string;
+  mode: string;
+  analysisCoverage: string;
+  estimatedCostUsd: number;
+  status: string;
+  promptPreview?: string;
+  output: Record<string, unknown> | null;
+  createdAt: string;
 }
 
 export default function AIAssistantPage() {
-  const [topic, setTopic] = useState('');
-  const [targetPlatform, setTargetPlatform] = useState('Instagram Reels & TikTok');
-  const [tone, setTone] = useState('High Retention / Pattern Interrupt');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [mode, setMode] = useState<'gemini' | 'fallback' | null>(null);
+  const [inputs, setInputs] = useState<UniversalInputItem[]>([]);
+  const [promptText, setPromptText] = useState('');
+  const [taskType, setTaskType] = useState<
+    'multimodal_analysis' | 'hook_generation' | 'document_analysis' | 'website_analysis' | 'caption_seo'
+  >('multimodal_analysis');
+  const [platform, setPlatform] = useState('Instagram Reels & TikTok');
+  const [executionMode, setExecutionMode] = useState<'local_free' | 'manual_assisted' | 'direct_api'>('local_free');
+  const [approvedPaid, setApprovedPaid] = useState(false);
+
+  const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hooks, setHooks] = useState<ViralHook[]>([]);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [latest, setLatest] = useState<GenerationRecord | null>(null);
+  const [history, setHistory] = useState<GenerationRecord[]>([]);
+  const [manualPaste, setManualPaste] = useState('');
+  const [copied, setCopied] = useState(false);
 
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!topic.trim()) return;
-
-    setError(null);
-    setIsGenerating(true);
-
+  const loadHistory = async () => {
     try {
-      const res = await fetch('/api/ai/hooks', {
+      const res = await fetch('/api/ai/history', { cache: 'no-store' });
+      if (res.ok) {
+        const json = await res.json();
+        setHistory(json.data || []);
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    const t = setTimeout(() => void loadHistory(), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  const handleAnalyze = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setRunning(true);
+    try {
+      const res = await fetch('/api/ai/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          topic: topic.trim(),
-          platform: targetPlatform,
-          tone,
+          taskType,
+          executionMode,
+          approvedPaidExecution: approvedPaid,
+          promptText,
+          platform,
+          inputs,
         }),
       });
-
       const json = await res.json();
-      if (!res.ok) {
-        throw new Error(json.error || 'Generation failed');
-      }
-
-      setMode(json.mode || 'fallback');
-      setHooks(json.hooks || []);
+      if (!res.ok) throw new Error(json.error || 'AI analysis failed');
+      setLatest(json.data.generation);
+      await loadHistory();
     } catch (err: any) {
-      setError(err.message || 'Failed to generate hooks');
+      setError(err.message || 'AI request failed');
     } finally {
-      setIsGenerating(false);
+      setRunning(false);
     }
   };
 
-  const copyHook = (text: string, id: string) => {
+  const handleManualImport = async () => {
+    if (!latest || !manualPaste.trim()) return;
+    setError(null);
+    try {
+      const res = await fetch('/api/ai/history', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ generationId: latest._id, manualJsonText: manualPaste }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to import manual response');
+      setLatest(json.data);
+      setManualPaste('');
+      await loadHistory();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  const copyPromptPack = (text: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
-      {/* Top Header */}
       <header className="sticky top-0 z-40 bg-[#0c0c0e]/90 backdrop-blur-md border-b border-white/[0.08] px-6 py-3.5 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link
@@ -83,161 +127,187 @@ export default function AIAssistantPage() {
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <span className="text-xs font-semibold text-[#818cf8]">Intelligence Engine</span>
-            <h1 className="text-sm font-bold text-white tracking-tight">AI Script & Hook Lab</h1>
+            <span className="text-xs font-semibold text-[#818cf8]">Phase 07 • Central AI Orchestrator</span>
+            <h1 className="text-sm font-bold text-white tracking-tight">Multimodal AI & Universal Input Studio</h1>
           </div>
         </div>
-
-        {mode && (
-          <span
-            className={`text-[10px] font-mono px-2.5 py-1 rounded-full border ${
-              mode === 'gemini'
-                ? 'bg-[#10b981]/15 border-[#10b981]/30 text-[#10b981]'
-                : 'bg-[#6366f1]/15 border-[#6366f1]/30 text-[#a5b4fc]'
-            }`}
-          >
-            {mode === 'gemini' ? 'Live Gemini AI' : 'Smart Template Mode (Set GEMINI_API_KEY for Live AI)'}
-          </span>
-        )}
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-6 py-8 space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white font-headline">Viral Hook & Pacing Generator</h2>
-          <p className="text-xs text-[#a1a1aa] mt-1">
-            Generate scroll-stopping 0–3s hooks, retention estimates, and visual cues via our server-side AI proxy.
-          </p>
-        </div>
+      <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-7 space-y-5">
+          <UniversalInput
+            items={inputs}
+            onChange={setInputs}
+            multiple
+            promptText={promptText}
+            onPromptTextChange={setPromptText}
+            title="Universal Multimodal Inputs (Files, URLs, Prompts & Vault)"
+          />
 
-        {/* Prompt Input Card */}
-        <form onSubmit={handleGenerate} className="p-5 rounded-xl bg-[#121215] border border-white/[0.08] space-y-4">
-          {error && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{error}</span>
+          <form onSubmit={handleAnalyze} className="p-5 rounded-2xl bg-[#121215] border border-white/[0.08] space-y-4">
+            {error && (
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div>
+                <label className="text-[11px] text-[#a1a1aa] block mb-1">AI Task</label>
+                <select
+                  value={taskType}
+                  onChange={(e) => setTaskType(e.target.value as any)}
+                  className="w-full bg-[#09090b] border border-white/[0.08] rounded-xl px-3 py-2 text-white"
+                >
+                  <option value="multimodal_analysis">Multimodal Analysis</option>
+                  <option value="hook_generation">Viral Hook Generation</option>
+                  <option value="document_analysis">Document / Script Analysis</option>
+                  <option value="website_analysis">Product / Website Analysis</option>
+                  <option value="caption_seo">Caption & SEO Pack</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-[#a1a1aa] block mb-1">Target Platform</label>
+                <select
+                  value={platform}
+                  onChange={(e) => setPlatform(e.target.value)}
+                  className="w-full bg-[#09090b] border border-white/[0.08] rounded-xl px-3 py-2 text-white"
+                >
+                  <option value="Instagram Reels & TikTok">Instagram Reels & TikTok</option>
+                  <option value="YouTube Shorts">YouTube Shorts</option>
+                  <option value="Multi-Platform">Multi-Platform</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[11px] text-[#a1a1aa] block mb-1">Execution Mode</label>
+                <select
+                  value={executionMode}
+                  onChange={(e) => setExecutionMode(e.target.value as any)}
+                  className="w-full bg-[#09090b] border border-white/[0.08] rounded-xl px-3 py-2 text-white"
+                >
+                  <option value="local_free">Local Free ($0.00)</option>
+                  <option value="manual_assisted">Manual Assisted Prompt Pack ($0.00)</option>
+                  <option value="direct_api">Live Gemini API (Approval Required)</option>
+                </select>
+              </div>
             </div>
-          )}
 
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-white">Video Topic / Brand / Product *</label>
-            <input
-              type="text"
-              required
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. AI Video Editing App, Myntra Summer Fashion Haul, Crypto Wallet..."
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#71717a] focus:outline-none focus:border-[#6366f1]"
-            />
-          </div>
+            {executionMode === 'direct_api' && (
+              <label className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={approvedPaid}
+                  onChange={(e) => setApprovedPaid(e.target.checked)}
+                  className="accent-amber-400"
+                />
+                <ShieldCheck className="w-4 h-4 shrink-0" />
+                <span>I approve external Gemini API usage (video inputs send extracted keyframes + transcript, not raw video).</span>
+              </label>
+            )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-white">Target Platform</label>
-              <select
-                value={targetPlatform}
-                onChange={(e) => setTargetPlatform(e.target.value)}
-                className="w-full bg-[#09090b] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]"
-              >
-                <option value="Instagram Reels & TikTok">Instagram Reels & TikTok</option>
-                <option value="YouTube Shorts">YouTube Shorts</option>
-                <option value="UGC Brand Ad">UGC Brand Ad</option>
-              </select>
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-white">Hook Style</label>
-              <select
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-                className="w-full bg-[#09090b] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#6366f1]"
-              >
-                <option value="High Retention / Pattern Interrupt">High Retention / Pattern Interrupt</option>
-                <option value="Curiosity Gap / Story">Curiosity Gap / Story</option>
-                <option value="Problem vs Solution UGC">Problem vs Solution UGC</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex justify-end">
             <button
               type="submit"
-              disabled={isGenerating}
-              className="px-5 py-2.5 rounded-xl bg-[#6366f1] hover:bg-[#4f46e5] text-white text-xs font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+              disabled={running || (inputs.length === 0 && !promptText.trim())}
+              className="w-full py-2.5 px-4 rounded-xl bg-[#6366f1] hover:bg-[#4f46e5] disabled:opacity-50 text-white text-xs font-bold flex items-center justify-center gap-2"
             >
-              {isGenerating ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Generating Hooks...</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Generate Viral Hooks</span>
-                </>
-              )}
+              {running ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+              <span>{running ? 'Running AI Orchestrator...' : 'Run Multimodal AI Analysis'}</span>
             </button>
-          </div>
-        </form>
+          </form>
 
-        {/* Results or Empty State */}
-        {hooks.length === 0 ? (
-          <div className="py-16 text-center rounded-xl bg-[#121215] border border-white/[0.08] space-y-2 px-4">
-            <Zap className="w-8 h-8 text-[#71717a] mx-auto opacity-30" />
-            <div className="text-sm font-semibold text-white">Ready to architect your hook</div>
-            <p className="text-xs text-[#71717a] max-w-sm mx-auto">
-              Enter a topic or sponsor product above to generate retention-optimized opening lines and visual cues.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {hooks.map((h) => (
-              <div
-                key={h.id}
-                className="p-5 rounded-xl bg-[#121215] border border-white/[0.08] space-y-3"
-              >
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[10px] font-bold font-mono flex items-center gap-1">
-                      <TrendingUp className="w-3 h-3" />
-                      <span>Score {h.score}/100</span>
-                    </span>
-                    <span className="text-[11px] font-mono text-[#818cf8]">{h.retentionEstimate}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => copyHook(h.hook, h.id)}
-                      className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] text-xs text-[#a1a1aa] hover:text-white border border-white/[0.08] flex items-center gap-1"
-                    >
-                      {copiedId === h.id ? <Check className="w-3 h-3 text-[#10b981]" /> : <Copy className="w-3 h-3" />}
-                      <span>{copiedId === h.id ? 'Copied' : 'Copy'}</span>
-                    </button>
-                    <Link
-                      href={`/projects/new?campaignTitle=${encodeURIComponent(topic)}`}
-                      className="px-2.5 py-1 rounded-lg bg-[#6366f1]/15 hover:bg-[#6366f1]/25 text-xs text-[#818cf8] border border-[#6366f1]/30 flex items-center gap-1"
-                    >
-                      <FolderPlus className="w-3 h-3" />
-                      <span>Start Cut</span>
-                    </Link>
-                  </div>
+          {latest && (
+            <div className="p-5 rounded-2xl bg-[#121215] border border-white/[0.08] space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-white">
+                  <Sparkles className="w-4 h-4 text-[#818cf8]" />
+                  <span>Orchestrator Output</span>
                 </div>
-
-                <p className="text-sm font-bold text-white leading-snug">&ldquo;{h.hook}&rdquo;</p>
-
-                <div className="text-xs text-[#a1a1aa] space-y-1 pt-2 border-t border-white/[0.06]">
-                  <div>
-                    <span className="text-[#71717a] font-mono">Pacing:</span> {h.pacingNote}
-                  </div>
-                  {h.visualCue && (
-                    <div>
-                      <span className="text-[#71717a] font-mono">Visual Cue:</span> {h.visualCue}
-                    </div>
-                  )}
+                <div className="flex flex-wrap gap-1.5 text-[10px] font-mono">
+                  <span className="px-2 py-0.5 rounded-full bg-[#6366f1]/15 text-[#a5b4fc]">{latest.provider}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981]">{latest.analysisCoverage}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-white/[0.06] text-[#a1a1aa]">
+                    ${latest.estimatedCostUsd.toFixed(4)}
+                  </span>
                 </div>
               </div>
-            ))}
+
+              {latest.status === 'awaiting_manual_import' && latest.promptPreview && (
+                <div className="space-y-2 p-3 rounded-xl bg-[#09090b] border border-white/[0.08]">
+                  <div className="flex items-center justify-between text-[11px] text-[#a1a1aa]">
+                    <span>Manual Prompt Pack (copy into ChatGPT / Gemini web)</span>
+                    <button
+                      type="button"
+                      onClick={() => copyPromptPack(latest.promptPreview!)}
+                      className="text-[#818cf8] hover:text-white flex items-center gap-1"
+                    >
+                      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copied ? 'Copied' : 'Copy Prompt'}</span>
+                    </button>
+                  </div>
+                  <pre className="text-[11px] text-[#d4d4d8] whitespace-pre-wrap max-h-40 overflow-y-auto font-mono">
+                    {latest.promptPreview}
+                  </pre>
+                  <textarea
+                    rows={3}
+                    value={manualPaste}
+                    onChange={(e) => setManualPaste(e.target.value)}
+                    placeholder="Paste JSON or text response from your external AI subscription here..."
+                    className="w-full bg-[#121215] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleManualImport}
+                    className="px-3 py-1.5 rounded-lg bg-[#10b981] text-black text-xs font-bold flex items-center gap-1.5"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Save Manual AI Output</span>
+                  </button>
+                </div>
+              )}
+
+              <pre className="p-3 rounded-xl bg-[#09090b] border border-white/[0.06] text-xs text-[#e4e4e7] whitespace-pre-wrap overflow-x-auto max-h-72 font-mono">
+                {JSON.stringify(latest.output, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+
+        <aside className="lg:col-span-5 space-y-4">
+          <div className="p-5 rounded-2xl bg-[#121215] border border-white/[0.08] space-y-3">
+            <h2 className="text-xs font-bold text-white flex items-center gap-2">
+              <History className="w-4 h-4 text-[#818cf8]" />
+              <span>AI Generation History ({history.length})</span>
+            </h2>
+            {history.length === 0 ? (
+              <div className="text-xs text-[#71717a] py-6 text-center">
+                No AI generations persisted yet. Run an analysis on the left.
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-[600px] overflow-y-auto pr-1">
+                {history.map((g) => (
+                  <button
+                    key={g._id}
+                    type="button"
+                    onClick={() => setLatest(g)}
+                    className="w-full text-left p-3 rounded-xl bg-[#09090b] hover:border-[#6366f1]/50 border border-white/[0.06] space-y-1 transition-colors"
+                  >
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-white">{g.taskType}</span>
+                      <span className="text-[10px] font-mono text-[#10b981]">{g.provider}</span>
+                    </div>
+                    <div className="text-[10px] text-[#71717a] font-mono flex items-center justify-between">
+                      <span>{g.analysisCoverage}</span>
+                      <span>${g.estimatedCostUsd.toFixed(4)}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </aside>
       </main>
     </div>
   );

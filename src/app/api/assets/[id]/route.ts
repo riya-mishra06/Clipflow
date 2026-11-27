@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { Asset } from '@/models/Asset';
 import { getCurrentUser } from '@/lib/auth';
+import { mediaStorage } from '@/lib/storage';
 
 export const dynamic = 'force-dynamic';
 
@@ -84,7 +85,8 @@ export async function PATCH(
       return NextResponse.json({ data: restored });
     }
 
-    const { action, ...fieldsToUpdate } = validation.data;
+    const { action: _action, ...fieldsToUpdate } = validation.data;
+    void _action;
     const updated = await Asset.findOneAndUpdate(
       { _id: id, ownerId: user.userId },
       { $set: fieldsToUpdate },
@@ -125,10 +127,13 @@ export async function DELETE(
     const permanent = searchParams.get('permanent') === 'true';
 
     if (permanent) {
-      // Hard Delete: permanently remove from MongoDB
+      // Hard Delete: permanently remove from MongoDB & local media storage
       const deleted = await Asset.findOneAndDelete({ _id: id, ownerId: user.userId });
       if (!deleted) {
         return NextResponse.json({ error: 'Asset not found or unauthorized' }, { status: 404 });
+      }
+      if (deleted.objectKey) {
+        await mediaStorage.delete(deleted.objectKey);
       }
       return NextResponse.json({ success: true, message: 'Asset permanently deleted' });
     }

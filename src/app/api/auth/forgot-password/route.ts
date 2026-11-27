@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { hashResetCode } from '@/lib/security';
 
 const ForgotSchema = z.object({
   email: z.string().trim().email({ message: 'Please enter a valid email address' }).toLowerCase(),
@@ -10,6 +12,15 @@ const ForgotSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rate = checkRateLimit(`forgot:${ip}`, 5, 60 * 1000);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: `Too many recovery requests. Please retry in ${rate.retryAfterSec}s.` },
+        { status: 429, headers: { 'Retry-After': String(rate.retryAfterSec) } }
+      );
+    }
+
     await connectDB();
     const body = await req.json();
 
@@ -26,7 +37,7 @@ export async function POST(req: Request) {
 
     if (user) {
       const code = crypto.randomInt(100000, 999999).toString();
-      user.resetCode = code;
+      user.resetCode = hashResetCode(code);
       user.resetCodeExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
       await user.save();
 

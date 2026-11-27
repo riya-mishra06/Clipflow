@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Film,
   Sparkles,
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react';
 
 export default function WelcomePage() {
+  const router = useRouter();
   const [userName, setUserName] = useState<string>('Creator');
   const [userEmail, setUserEmail] = useState<string>('');
   const [checkingAuth, setCheckingAuth] = useState<boolean>(true);
@@ -35,18 +37,18 @@ export default function WelcomePage() {
             setUserEmail(data.user.email);
           }
         } else {
-          window.location.href = '/login';
+          router.replace('/login');
           return;
         }
       } catch {
-        window.location.href = '/login';
+        router.replace('/login');
         return;
       } finally {
         setCheckingAuth(false);
       }
     }
     fetchUser();
-  }, []);
+  }, [router]);
 
   if (checkingAuth) {
     return (

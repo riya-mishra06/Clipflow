@@ -15,7 +15,8 @@ import {
   AlertCircle,
   Check,
   Link2,
-  CheckCircle2
+  CheckCircle2,
+  Download
 } from 'lucide-react';
 
 interface AssetDetail {
@@ -26,6 +27,7 @@ interface AssetDetail {
   mimeType?: string;
   sizeBytes?: number;
   externalUrl?: string;
+  objectKey?: string;
   projectTitle?: string;
   tags: string[];
   status: string;
@@ -151,6 +153,16 @@ export default function AssetDetailsPage() {
             <span>{copied ? 'Copied!' : 'Copy Link'}</span>
           </button>
 
+          {asset.objectKey && (
+            <a
+              href={`/api/assets/${asset._id}/media?download=1`}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-[#6366f1] hover:bg-[#4f46e5] text-white font-bold text-xs transition-all"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download</span>
+            </a>
+          )}
+
           {asset.externalUrl && (
             <a
               href={asset.externalUrl}
@@ -168,10 +180,32 @@ export default function AssetDetailsPage() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Preview Panel */}
         <div className="lg:col-span-7">
-          <div className="rounded-2xl bg-[#121215] border border-white/[0.08] p-8 flex flex-col items-center justify-center min-h-[360px] space-y-4 text-center">
-            <div className="w-20 h-20 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-              {getCategoryIcon(asset.category)}
-            </div>
+          <div className="rounded-2xl bg-[#121215] border border-white/[0.08] p-6 flex flex-col items-center justify-center min-h-[360px] space-y-4 text-center">
+            {asset.objectKey && asset.category === 'video' ? (
+              <video
+                src={`/api/assets/${asset._id}/media`}
+                controls
+                className="w-full max-h-[420px] rounded-xl bg-black border border-white/[0.08]"
+              />
+            ) : asset.objectKey && asset.category === 'audio' ? (
+              <div className="w-full max-w-md space-y-4 py-6">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                  {getCategoryIcon(asset.category)}
+                </div>
+                <audio src={`/api/assets/${asset._id}/media`} controls className="w-full" />
+              </div>
+            ) : asset.objectKey && asset.category === 'image' ? (
+              <img
+                src={`/api/assets/${asset._id}/media`}
+                alt={asset.name}
+                className="max-h-[420px] rounded-xl object-contain border border-white/[0.08]"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                {getCategoryIcon(asset.category)}
+              </div>
+            )}
+
             <div className="space-y-1 max-w-md">
               <div className="text-base font-bold text-white break-all">{asset.name}</div>
               <div className="text-xs text-[#71717a] font-mono uppercase">
@@ -193,7 +227,7 @@ export default function AssetDetailsPage() {
             ) : (
               <div className="inline-flex items-center gap-1.5 text-xs text-[#10b981] font-mono">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Metadata Staged in Vault</span>
+                <span>{asset.objectKey ? 'Stored in Local Media Vault' : 'Metadata Staged in Vault'}</span>
               </div>
             )}
           </div>

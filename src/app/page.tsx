@@ -7,9 +7,7 @@ import {
   Folder,
   Plus,
   ArrowUpRight,
-  Loader2,
-  Layers,
-  DollarSign
+  Loader2
 } from 'lucide-react';
 
 interface DashboardProject {

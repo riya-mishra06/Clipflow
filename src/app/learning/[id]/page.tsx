@@ -10,12 +10,7 @@ import {
   CheckCircle2,
   Clock,
   Download,
-  Share2,
-  BookOpen,
-  ChevronRight,
-  Sparkles,
-  Volume2,
-  Film
+  ChevronRight
 } from 'lucide-react';
 
 interface Lesson {

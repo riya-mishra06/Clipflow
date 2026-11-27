@@ -9,8 +9,6 @@ import {
   BookmarkCheck,
   Plus,
   ArrowUpRight,
-  Clock,
-  DollarSign,
   Layers,
   Loader2
 } from 'lucide-react';

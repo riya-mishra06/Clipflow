@@ -173,9 +173,10 @@ export default function AssetLibraryPage() {
     }
   };
 
+  const [nowMs] = useState(() => Date.now());
   const getDaysRemaining = (expireAt?: string | null) => {
     if (!expireAt) return 7;
-    const diffMs = new Date(expireAt).getTime() - Date.now();
+    const diffMs = new Date(expireAt).getTime() - nowMs;
     const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     return Math.max(1, days);
   };

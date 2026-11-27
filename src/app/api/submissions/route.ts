@@ -61,11 +61,25 @@ export async function POST(req: Request) {
     }
 
     const { projectId, campaignId, ...rest } = validation.data;
+    const validProjectId =
+      projectId && mongoose.Types.ObjectId.isValid(projectId) ? projectId : undefined;
+
+    // Prevent duplicate submissions for the same project/title and cut version
+    const duplicateFilter = validProjectId
+      ? { ownerId: user.userId, projectId: validProjectId, cutVersion: rest.cutVersion }
+      : { ownerId: user.userId, projectTitle: rest.projectTitle, cutVersion: rest.cutVersion };
+    const existingSubmission = await Submission.findOne(duplicateFilter).select('_id');
+    if (existingSubmission) {
+      return NextResponse.json(
+        { error: `A submission for "${rest.projectTitle}" (${rest.cutVersion}) already exists.` },
+        { status: 409 }
+      );
+    }
 
     const submission = await Submission.create({
       ...rest,
       ownerId: user.userId,
-      projectId: projectId && mongoose.Types.ObjectId.isValid(projectId) ? projectId : undefined,
+      projectId: validProjectId,
       campaignId: campaignId && mongoose.Types.ObjectId.isValid(campaignId) ? campaignId : undefined,
       status: 'pending_review',
     });

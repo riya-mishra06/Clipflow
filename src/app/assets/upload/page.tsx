@@ -27,6 +27,7 @@ export default function AssetUploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [kind, setKind] = useState<'upload' | 'link'>('upload');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [name, setName] = useState('');
   const [category, setCategory] = useState<'video' | 'audio' | 'image' | 'document'>('video');
   const [sizeBytes, setSizeBytes] = useState<number>(0);
@@ -65,6 +66,7 @@ export default function AssetUploadPage() {
 
   const applySelectedFile = (file: File) => {
     setKind('upload');
+    setSelectedFile(file);
     setName(file.name);
     setSizeBytes(file.size);
     setMimeType(file.type || 'application/octet-stream');
@@ -127,6 +129,11 @@ export default function AssetUploadPage() {
       return;
     }
 
+    if (kind === 'upload' && !selectedFile) {
+      setError('Please select or drop a media file to upload.');
+      return;
+    }
+
     if (kind === 'link' && !externalUrl.trim()) {
       setError('Please enter an external Drive, Dropbox, or media URL.');
       return;
@@ -136,21 +143,37 @@ export default function AssetUploadPage() {
     try {
       const matchedProject = projects.find((p) => p._id === selectedProjectId);
 
-      const res = await fetch('/api/assets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          kind,
-          category,
-          mimeType: mimeType || undefined,
-          sizeBytes: kind === 'upload' ? sizeBytes : 0,
-          externalUrl: kind === 'link' ? externalUrl.trim() : undefined,
-          tags,
-          projectId: selectedProjectId || undefined,
-          projectTitle: matchedProject?.title || undefined,
-        }),
-      });
+      let res: Response;
+      if (kind === 'upload' && selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('name', name.trim());
+        formData.append('category', category);
+        formData.append('tags', JSON.stringify(tags));
+        if (selectedProjectId) formData.append('projectId', selectedProjectId);
+        if (matchedProject?.title) formData.append('projectTitle', matchedProject.title);
+
+        res = await fetch('/api/assets/upload', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        res = await fetch('/api/assets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name.trim(),
+            kind,
+            category,
+            mimeType: mimeType || undefined,
+            sizeBytes: 0,
+            externalUrl: externalUrl.trim(),
+            tags,
+            projectId: selectedProjectId || undefined,
+            projectTitle: matchedProject?.title || undefined,
+          }),
+        });
+      }
 
       const json = await res.json();
       if (!res.ok) {

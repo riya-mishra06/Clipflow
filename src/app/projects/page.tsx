@@ -3,14 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  Film,
   Plus,
   Search,
   ArrowUpRight,
   Folder,
-  Loader2,
-  Calendar,
-  Layers
+  Loader2
 } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
 

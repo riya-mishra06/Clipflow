@@ -3,15 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  Film,
-  Play,
-  Share2,
-  ExternalLink,
-  Search,
-  Sparkles,
-  ArrowUpRight,
-  Eye,
-  CheckCircle2
+  ArrowUpRight
 } from 'lucide-react';
 
 interface ViralReference {
@@ -49,7 +41,7 @@ const REFERENCES: ViralReference[] = [
 ];
 
 export default function ReferenceLibraryPage() {
-  const [search, setSearch] = useState('');
+  const [search] = useState('');
 
   const filtered = REFERENCES.filter((r) =>
     r.title.toLowerCase().includes(search.toLowerCase()) ||

@@ -3,16 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  TrendingUp,
   Flame,
   Music,
-  Share2,
-  Film,
-  ExternalLink,
-  Search,
-  Filter,
-  BarChart2,
-  Clock,
   ArrowUpRight
 } from 'lucide-react';
 
@@ -62,7 +54,7 @@ const TRENDS: TrendItem[] = [
 
 export default function TrendDiscoveryPage() {
   const [platformFilter, setPlatformFilter] = useState('All');
-  const [search, setSearch] = useState('');
+  const [search] = useState('');
 
   const filtered = TRENDS.filter((t) => {
     const matchPlatform = platformFilter === 'All' || t.platform === platformFilter;

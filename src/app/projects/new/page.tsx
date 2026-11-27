@@ -298,7 +298,7 @@ function NewProjectForm() {
                   <span>Workspace Ready for Generation</span>
                 </div>
                 <p className="text-[#71717a]">
-                  Clicking "Launch Studio Project" will save this cut to your MongoDB Atlas cluster and initialize your video pipeline.
+                  Clicking &ldquo;Launch Studio Project&rdquo; will save this cut to your MongoDB Atlas cluster and initialize your video pipeline.
                 </p>
               </div>
 

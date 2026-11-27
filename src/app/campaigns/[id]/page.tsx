@@ -9,7 +9,6 @@ import {
   BookmarkCheck,
   Share2,
   Clock,
-  DollarSign,
   CheckCircle2,
   AlertCircle,
   FileText,

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { Submission } from '@/models/Submission';
+import { User } from '@/models/User';
 import { getCurrentUser } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -65,15 +66,34 @@ export async function PATCH(
       return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
+    const existing = await Submission.findOne({ _id: id, ownerId: user.userId });
+    if (!existing) {
+      return NextResponse.json({ error: 'Submission not found or unauthorized' }, { status: 404 });
+    }
+
+    // Prevent creator self-approval: only admin/reviewer role may transition status
+    if (validation.data.status && validation.data.status !== existing.status) {
+      const userDoc = await User.findById(user.userId).select('role');
+      if (userDoc?.role !== 'admin') {
+        return NextResponse.json(
+          { error: 'Only reviewers or admins can change submission approval status' },
+          { status: 403 }
+        );
+      }
+    }
+
+    if (existing.status === 'approved' && !validation.data.status) {
+      return NextResponse.json(
+        { error: 'Approved submissions cannot be modified' },
+        { status: 409 }
+      );
+    }
+
     const updated = await Submission.findOneAndUpdate(
       { _id: id, ownerId: user.userId },
       { $set: validation.data },
       { new: true }
     );
-
-    if (!updated) {
-      return NextResponse.json({ error: 'Submission not found or unauthorized' }, { status: 404 });
-    }
 
     return NextResponse.json({ data: updated });
   } catch (err: any) {

@@ -36,7 +36,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    const user = await User.findById(session.userId).select('-passwordHash');
+    const user = await User.findById(session.userId).select('-passwordHash -resetCode -resetCodeExpiresAt');
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -90,12 +90,13 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: firstError }, { status: 400 });
     }
 
-    const { type, ...fields } = validation.data;
+    const { type: _type, ...fields } = validation.data;
+    void _type;
     const updatedUser = await User.findByIdAndUpdate(
       session.userId,
       { $set: fields },
       { new: true }
-    ).select('-passwordHash');
+    ).select('-passwordHash -resetCode -resetCodeExpiresAt');
 
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

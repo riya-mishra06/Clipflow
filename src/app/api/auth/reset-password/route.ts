@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { connectDB } from '@/lib/db';
 import { User } from '@/models/User';
+import { checkRateLimit, getClientIp } from '@/lib/rateLimit';
+import { verifyResetCode } from '@/lib/security';
 
 const ResetSchema = z.object({
   email: z.string().trim().email().toLowerCase(),
@@ -12,6 +14,15 @@ const ResetSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rate = checkRateLimit(`reset:${ip}`, 5, 60 * 1000);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: `Too many reset attempts. Please retry in ${rate.retryAfterSec}s.` },
+        { status: 429, headers: { 'Retry-After': String(rate.retryAfterSec) } }
+      );
+    }
+
     await connectDB();
     const body = await req.json();
 
@@ -27,9 +38,9 @@ export async function POST(req: Request) {
     if (
       !user ||
       !user.resetCode ||
-      user.resetCode !== code ||
       !user.resetCodeExpiresAt ||
-      user.resetCodeExpiresAt.getTime() < Date.now()
+      user.resetCodeExpiresAt.getTime() < Date.now() ||
+      !verifyResetCode(code, user.resetCode)
     ) {
       return NextResponse.json(
         { error: 'Invalid or expired recovery code' },

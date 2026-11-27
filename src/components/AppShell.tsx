@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   Film,
   Compass,
@@ -21,8 +21,8 @@ import {
   Menu,
   X,
   LogOut,
-  User as UserIcon,
-  LogIn
+  LogIn,
+  Scissors
 } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -56,6 +56,7 @@ export default function AppShell({ children }: AppShellProps) {
 
   const workstationLinks = [
     { label: 'Dashboard', href: '/', icon: Film },
+    { label: 'Clipping Studio', href: '/clipping', icon: Scissors },
     { label: 'Campaigns', href: '/campaigns', icon: Compass },
     { label: 'Projects', href: '/projects', icon: Folder },
     { label: 'Assets', href: '/assets', icon: Layers },

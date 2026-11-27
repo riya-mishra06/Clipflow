@@ -3,18 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
-  Film,
   GraduationCap,
   Play,
   Clock,
-  BookOpen,
-  Sparkles,
-  ArrowRight,
-  Search,
-  CheckCircle2,
-  Award,
-  Layers,
-  Compass
+  Search
 } from 'lucide-react';
 
 interface Course {

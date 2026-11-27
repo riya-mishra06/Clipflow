@@ -5,6 +5,7 @@ import { connectDB } from '@/lib/db';
 import { IngestSource } from '@/models/IngestSource';
 import { getCurrentUser } from '@/lib/auth';
 import { upsertExternalCampaigns, RawExternalCampaign } from '@/lib/campaignAdapter';
+import { validateExternalFeedUrl } from '@/lib/security';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,7 +43,17 @@ export async function POST(req: Request) {
     if (Array.isArray(rawItems) && rawItems.length > 0) {
       itemsToImport = rawItems as RawExternalCampaign[];
     } else if (source.feedUrl) {
-      const feedRes = await fetch(source.feedUrl, { cache: 'no-store' });
+      let safeFeedUrl: URL;
+      try {
+        safeFeedUrl = validateExternalFeedUrl(source.feedUrl);
+      } catch (urlErr: any) {
+        return NextResponse.json(
+          { error: urlErr.message || 'Invalid external feed URL' },
+          { status: 400 }
+        );
+      }
+
+      const feedRes = await fetch(safeFeedUrl.toString(), { cache: 'no-store', redirect: 'error' });
       if (!feedRes.ok) {
         source.status = 'error';
         source.lastError = `Feed returned HTTP ${feedRes.status}`;
